@@ -1,0 +1,2572 @@
+[
+  {
+    "id": "11.01",
+    "label": "Aceh Selatan",
+    "postalCode": "23752"
+  },
+  {
+    "id": "11.02",
+    "label": "Aceh Tenggara",
+    "postalCode": "24676"
+  },
+  {
+    "id": "11.03",
+    "label": "Aceh Timur",
+    "postalCode": "24455"
+  },
+  {
+    "id": "11.04",
+    "label": "Aceh Tengah",
+    "postalCode": "24569"
+  },
+  {
+    "id": "11.05",
+    "label": "Aceh Barat",
+    "postalCode": "23681"
+  },
+  {
+    "id": "11.06",
+    "label": "Aceh Besar",
+    "postalCode": "23363"
+  },
+  {
+    "id": "11.07",
+    "label": "Pidie",
+    "postalCode": "24161"
+  },
+  {
+    "id": "11.08",
+    "label": "Aceh Utara",
+    "postalCode": "24382"
+  },
+  {
+    "id": "11.09",
+    "label": "Simeulue",
+    "postalCode": "23898"
+  },
+  {
+    "id": "11.10",
+    "label": "Aceh Singkil",
+    "postalCode": "24794"
+  },
+  {
+    "id": "11.11",
+    "label": "Bireuen",
+    "postalCode": "24267"
+  },
+  {
+    "id": "11.12",
+    "label": "Aceh Barat Daya",
+    "postalCode": "23765"
+  },
+  {
+    "id": "11.13",
+    "label": "Gayo Lues",
+    "postalCode": "24655"
+  },
+  {
+    "id": "11.14",
+    "label": "Aceh Jaya",
+    "postalCode": "23653"
+  },
+  {
+    "id": "11.15",
+    "label": "Nagan Raya",
+    "postalCode": "23662"
+  },
+  {
+    "id": "11.16",
+    "label": "Aceh Tamiang",
+    "postalCode": "24476"
+  },
+  {
+    "id": "11.17",
+    "label": "Bener Meriah",
+    "postalCode": "24581"
+  },
+  {
+    "id": "11.18",
+    "label": "Pidie Jaya",
+    "postalCode": "24186"
+  },
+  {
+    "id": "11.71",
+    "label": "Kota Banda Aceh",
+    "postalCode": "23234"
+  },
+  {
+    "id": "11.72",
+    "label": "Kota Sabang",
+    "postalCode": "23521"
+  },
+  {
+    "id": "11.73",
+    "label": "Kota Lhokseumawe",
+    "postalCode": "24351"
+  },
+  {
+    "id": "11.74",
+    "label": "Kota Langsa",
+    "postalCode": "24411"
+  },
+  {
+    "id": "11.75",
+    "label": "Kota Subulussalam",
+    "postalCode": "24779"
+  },
+  {
+    "id": "12.01",
+    "label": "Tapanuli Tengah",
+    "postalCode": "22560"
+  },
+  {
+    "id": "12.02",
+    "label": "Tapanuli Utara",
+    "postalCode": "22472"
+  },
+  {
+    "id": "12.03",
+    "label": "Tapanuli Selatan",
+    "postalCode": "22739"
+  },
+  {
+    "id": "12.04",
+    "label": "Nias",
+    "postalCode": "22871"
+  },
+  {
+    "id": "12.05",
+    "label": "Langkat",
+    "postalCode": "20774"
+  },
+  {
+    "id": "12.06",
+    "label": "Karo",
+    "postalCode": "22170"
+  },
+  {
+    "id": "12.07",
+    "label": "Deli Serdang",
+    "postalCode": "20356"
+  },
+  {
+    "id": "12.08",
+    "label": "Simalungun",
+    "postalCode": "21184"
+  },
+  {
+    "id": "12.09",
+    "label": "Asahan",
+    "postalCode": "21261"
+  },
+  {
+    "id": "12.10",
+    "label": "Labuhanbatu",
+    "postalCode": "21451"
+  },
+  {
+    "id": "12.11",
+    "label": "Dairi",
+    "postalCode": "22284"
+  },
+  {
+    "id": "12.12",
+    "label": "Toba Samosir",
+    "postalCode": "22384"
+  },
+  {
+    "id": "12.13",
+    "label": "Mandailing Natal",
+    "postalCode": "22912"
+  },
+  {
+    "id": "12.14",
+    "label": "Nias Selatan",
+    "postalCode": "22865"
+  },
+  {
+    "id": "12.15",
+    "label": "Pakpak Bharat",
+    "postalCode": "22275"
+  },
+  {
+    "id": "12.16",
+    "label": "Humbang Hasundutan",
+    "postalCode": "22457"
+  },
+  {
+    "id": "12.17",
+    "label": "Samosir",
+    "postalCode": "22390"
+  },
+  {
+    "id": "12.18",
+    "label": "Serdang Bedagai",
+    "postalCode": "20985"
+  },
+  {
+    "id": "12.19",
+    "label": "Batu Bara",
+    "postalCode": "21255"
+  },
+  {
+    "id": "12.20",
+    "label": "Padang Lawas Utara",
+    "postalCode": "22756"
+  },
+  {
+    "id": "12.21",
+    "label": "Padang Lawas",
+    "postalCode": "22755"
+  },
+  {
+    "id": "12.22",
+    "label": "Labuhanbatu Selatan",
+    "postalCode": "21463"
+  },
+  {
+    "id": "12.23",
+    "label": "Labuhanbatu Utara",
+    "postalCode": "21452"
+  },
+  {
+    "id": "12.24",
+    "label": "Nias Utara",
+    "postalCode": "22852"
+  },
+  {
+    "id": "12.25",
+    "label": "Nias Barat",
+    "postalCode": "22862"
+  },
+  {
+    "id": "12.71",
+    "label": "Kota Medan",
+    "postalCode": "20216"
+  },
+  {
+    "id": "12.72",
+    "label": "Kota Pematangsiantar",
+    "postalCode": "21137"
+  },
+  {
+    "id": "12.73",
+    "label": "Kota Sibolga",
+    "postalCode": "22513"
+  },
+  {
+    "id": "12.74",
+    "label": "Kota Tanjung Balai",
+    "postalCode": "21368"
+  },
+  {
+    "id": "12.75",
+    "label": "Kota Binjai",
+    "postalCode": "20714"
+  },
+  {
+    "id": "12.76",
+    "label": "Kota Tebing Tinggi",
+    "postalCode": "20624"
+  },
+  {
+    "id": "12.77",
+    "label": "Kota Padangsidimpuan",
+    "postalCode": "22730"
+  },
+  {
+    "id": "12.78",
+    "label": "Kota Gunungsitoli",
+    "postalCode": "22851"
+  },
+  {
+    "id": "13.01",
+    "label": "Pesisir Selatan",
+    "postalCode": "25654"
+  },
+  {
+    "id": "13.02",
+    "label": "Solok",
+    "postalCode": "27388"
+  },
+  {
+    "id": "13.03",
+    "label": "Sijunjung",
+    "postalCode": "27572"
+  },
+  {
+    "id": "13.04",
+    "label": "Tanah Datar",
+    "postalCode": "27261"
+  },
+  {
+    "id": "13.05",
+    "label": "Padang Pariaman",
+    "postalCode": "25576"
+  },
+  {
+    "id": "13.06",
+    "label": "Agam",
+    "postalCode": "26471"
+  },
+  {
+    "id": "13.07",
+    "label": "Lima Puluh Kota",
+    "postalCode": "26271"
+  },
+  {
+    "id": "13.08",
+    "label": "Pasaman",
+    "postalCode": "26318"
+  },
+  {
+    "id": "13.09",
+    "label": "Kepulauan Mentawai",
+    "postalCode": "25392"
+  },
+  {
+    "id": "13.10",
+    "label": "Dharmasraya",
+    "postalCode": "27685"
+  },
+  {
+    "id": "13.11",
+    "label": "Solok Selatan",
+    "postalCode": "27774"
+  },
+  {
+    "id": "13.12",
+    "label": "Pasaman Barat",
+    "postalCode": "26566"
+  },
+  {
+    "id": "13.71",
+    "label": "Kota Padang",
+    "postalCode": "25237"
+  },
+  {
+    "id": "13.72",
+    "label": "Kota Solok",
+    "postalCode": "27312"
+  },
+  {
+    "id": "13.73",
+    "label": "Kota Sawahlunto",
+    "postalCode": "27415"
+  },
+  {
+    "id": "13.74",
+    "label": "Kota Padang Panjang",
+    "postalCode": "27127"
+  },
+  {
+    "id": "13.75",
+    "label": "Kota Bukittinggi",
+    "postalCode": "26117"
+  },
+  {
+    "id": "13.76",
+    "label": "Kota Payakumbuh",
+    "postalCode": "26219"
+  },
+  {
+    "id": "13.77",
+    "label": "Kota Pariaman",
+    "postalCode": "25521"
+  },
+  {
+    "id": "14.01",
+    "label": "Kampar",
+    "postalCode": "28464"
+  },
+  {
+    "id": "14.02",
+    "label": "Indragiri Hulu",
+    "postalCode": "29355"
+  },
+  {
+    "id": "14.03",
+    "label": "Bengkalis",
+    "postalCode": "28763"
+  },
+  {
+    "id": "14.04",
+    "label": "Indragiri Hilir",
+    "postalCode": "29254"
+  },
+  {
+    "id": "14.05",
+    "label": "Pelalawan",
+    "postalCode": "28382"
+  },
+  {
+    "id": "14.06",
+    "label": "Rokan Hulu",
+    "postalCode": "28551"
+  },
+  {
+    "id": "14.07",
+    "label": "Rokan Hilir",
+    "postalCode": "28992"
+  },
+  {
+    "id": "14.08",
+    "label": "Siak",
+    "postalCode": "28662"
+  },
+  {
+    "id": "14.09",
+    "label": "Kuantan Singingi",
+    "postalCode": "29564"
+  },
+  {
+    "id": "14.10",
+    "label": "Kepulauan Meranti",
+    "postalCode": "28755"
+  },
+  {
+    "id": "14.71",
+    "label": "Kota Pekanbaru",
+    "postalCode": "28292"
+  },
+  {
+    "id": "14.72",
+    "label": "Kota Dumai",
+    "postalCode": "28826"
+  },
+  {
+    "id": "15.01",
+    "label": "Kerinci",
+    "postalCode": "37173"
+  },
+  {
+    "id": "15.02",
+    "label": "Merangin",
+    "postalCode": "37356"
+  },
+  {
+    "id": "15.03",
+    "label": "Sarolangun",
+    "postalCode": "37492"
+  },
+  {
+    "id": "15.04",
+    "label": "Batanghari",
+    "postalCode": "36657"
+  },
+  {
+    "id": "15.05",
+    "label": "Muaro Jambi",
+    "postalCode": "36361"
+  },
+  {
+    "id": "15.06",
+    "label": "Tanjung Jabung Barat",
+    "postalCode": "36514"
+  },
+  {
+    "id": "15.07",
+    "label": "Tanjung Jabung Timur",
+    "postalCode": "36762"
+  },
+  {
+    "id": "15.08",
+    "label": "Bungo",
+    "postalCode": "37252"
+  },
+  {
+    "id": "15.09",
+    "label": "Tebo",
+    "postalCode": "37555"
+  },
+  {
+    "id": "15.71",
+    "label": "Kota Jambi",
+    "postalCode": "36129"
+  },
+  {
+    "id": "15.72",
+    "label": "Kota Sungai Penuh",
+    "postalCode": "37111"
+  },
+  {
+    "id": "16.01",
+    "label": "Ogan Komering Ulu",
+    "postalCode": "32158"
+  },
+  {
+    "id": "16.02",
+    "label": "Ogan Komering Ilir",
+    "postalCode": "30657"
+  },
+  {
+    "id": "16.03",
+    "label": "Muara Enim",
+    "postalCode": "31354"
+  },
+  {
+    "id": "16.04",
+    "label": "Lahat",
+    "postalCode": "31419"
+  },
+  {
+    "id": "16.05",
+    "label": "Musi Rawas",
+    "postalCode": "31663"
+  },
+  {
+    "id": "16.06",
+    "label": "Musi Banyuasin",
+    "postalCode": "30758"
+  },
+  {
+    "id": "16.07",
+    "label": "Banyuasin",
+    "postalCode": "30953"
+  },
+  {
+    "id": "16.08",
+    "label": "Ogan Komering Ulu Timur",
+    "postalCode": "32360"
+  },
+  {
+    "id": "16.09",
+    "label": "Ogan Komering Ulu Selatan",
+    "postalCode": "32274"
+  },
+  {
+    "id": "16.10",
+    "label": "Ogan Ilir",
+    "postalCode": "30653"
+  },
+  {
+    "id": "16.11",
+    "label": "Empat Lawang",
+    "postalCode": "31456"
+  },
+  {
+    "id": "16.12",
+    "label": "Penukal Abab Lematang Ilir",
+    "postalCode": "31214"
+  },
+  {
+    "id": "16.13",
+    "label": "Musi Rawas Utara",
+    "postalCode": "31653"
+  },
+  {
+    "id": "16.71",
+    "label": "Kota Palembang",
+    "postalCode": "30151"
+  },
+  {
+    "id": "16.72",
+    "label": "Kota Pagar Alam",
+    "postalCode": "31510"
+  },
+  {
+    "id": "16.73",
+    "label": "Kota Lubuk Linggau",
+    "postalCode": "31619"
+  },
+  {
+    "id": "16.74",
+    "label": "Kota Prabumulih",
+    "postalCode": "31131"
+  },
+  {
+    "id": "17.01",
+    "label": "Bengkulu Selatan",
+    "postalCode": "38511"
+  },
+  {
+    "id": "17.02",
+    "label": "Rejang Lebong",
+    "postalCode": "39125"
+  },
+  {
+    "id": "17.03",
+    "label": "Bengkulu Utara",
+    "postalCode": "38611"
+  },
+  {
+    "id": "17.04",
+    "label": "Kaur",
+    "postalCode": "38955"
+  },
+  {
+    "id": "17.05",
+    "label": "Seluma",
+    "postalCode": "38875"
+  },
+  {
+    "id": "17.06",
+    "label": "Muko Muko",
+    "postalCode": "38763"
+  },
+  {
+    "id": "17.07",
+    "label": "Lebong",
+    "postalCode": "39259"
+  },
+  {
+    "id": "17.08",
+    "label": "Kepahiang",
+    "postalCode": "39372"
+  },
+  {
+    "id": "17.09",
+    "label": "Bengkulu Tengah",
+    "postalCode": "38382"
+  },
+  {
+    "id": "17.71",
+    "label": "Kota Bengkulu",
+    "postalCode": "38119"
+  },
+  {
+    "id": "18.01",
+    "label": "Lampung Selatan",
+    "postalCode": "35551"
+  },
+  {
+    "id": "18.02",
+    "label": "Lampung Tengah",
+    "postalCode": "34176"
+  },
+  {
+    "id": "18.03",
+    "label": "Lampung Utara",
+    "postalCode": "34511"
+  },
+  {
+    "id": "18.04",
+    "label": "Lampung Barat",
+    "postalCode": "34881"
+  },
+  {
+    "id": "18.05",
+    "label": "Tulang Bawang",
+    "postalCode": "34593"
+  },
+  {
+    "id": "18.06",
+    "label": "Tanggamus",
+    "postalCode": "35685"
+  },
+  {
+    "id": "18.07",
+    "label": "Lampung Timur",
+    "postalCode": "34194"
+  },
+  {
+    "id": "18.08",
+    "label": "Way Kanan",
+    "postalCode": "34764"
+  },
+  {
+    "id": "18.09",
+    "label": "Pesawaran",
+    "postalCode": "35366"
+  },
+  {
+    "id": "18.10",
+    "label": "Pringsewu",
+    "postalCode": "35372"
+  },
+  {
+    "id": "18.11",
+    "label": "Mesuji",
+    "postalCode": "34692"
+  },
+  {
+    "id": "18.12",
+    "label": "Tulang Bawang Barat",
+    "postalCode": "34793"
+  },
+  {
+    "id": "18.13",
+    "label": "Pesisir Barat",
+    "postalCode": "34875"
+  },
+  {
+    "id": "18.71",
+    "label": "Kota Bandar Lampung",
+    "postalCode": "35158"
+  },
+  {
+    "id": "18.72",
+    "label": "Kota Metro",
+    "postalCode": "34111"
+  },
+  {
+    "id": "19.01",
+    "label": "Bangka",
+    "postalCode": "33173"
+  },
+  {
+    "id": "19.02",
+    "label": "Belitung",
+    "postalCode": "33414"
+  },
+  {
+    "id": "19.03",
+    "label": "Bangka Selatan",
+    "postalCode": "33783"
+  },
+  {
+    "id": "19.04",
+    "label": "Bangka Tengah",
+    "postalCode": "33675"
+  },
+  {
+    "id": "19.05",
+    "label": "Bangka Barat",
+    "postalCode": "33364"
+  },
+  {
+    "id": "19.06",
+    "label": "Belitung Timur",
+    "postalCode": "33562"
+  },
+  {
+    "id": "19.71",
+    "label": "Kota Pangkal Pinang",
+    "postalCode": "33147"
+  },
+  {
+    "id": "21.01",
+    "label": "Bintan",
+    "postalCode": "29193"
+  },
+  {
+    "id": "21.02",
+    "label": "Karimun",
+    "postalCode": "29662"
+  },
+  {
+    "id": "21.03",
+    "label": "Natuna",
+    "postalCode": "29775"
+  },
+  {
+    "id": "21.04",
+    "label": "Lingga",
+    "postalCode": "29873"
+  },
+  {
+    "id": "21.05",
+    "label": "Kepulauan Anambas",
+    "postalCode": "29796"
+  },
+  {
+    "id": "21.71",
+    "label": "Kota Batam",
+    "postalCode": "29439"
+  },
+  {
+    "id": "21.72",
+    "label": "Kota Tanjung Pinang",
+    "postalCode": "29122"
+  },
+  {
+    "id": "31.01",
+    "label": "Administrasi Kepulauan Seribu",
+    "postalCode": "14540"
+  },
+  {
+    "id": "31.71",
+    "label": "Kota Administrasi Jakarta Pusat",
+    "postalCode": "10640"
+  },
+  {
+    "id": "31.72",
+    "label": "Kota Administrasi Jakarta Utara",
+    "postalCode": "14450"
+  },
+  {
+    "id": "31.73",
+    "label": "Kota Administrasi Jakarta Barat",
+    "postalCode": "11460"
+  },
+  {
+    "id": "31.74",
+    "label": "Kota Administrasi Jakarta Selatan",
+    "postalCode": "12630"
+  },
+  {
+    "id": "31.75",
+    "label": "Kota Administrasi Jakarta Timur",
+    "postalCode": "13460"
+  },
+  {
+    "id": "32.01",
+    "label": "Bogor",
+    "postalCode": "16670"
+  },
+  {
+    "id": "32.02",
+    "label": "Sukabumi",
+    "postalCode": "43366"
+  },
+  {
+    "id": "32.03",
+    "label": "Cianjur",
+    "postalCode": "43262"
+  },
+  {
+    "id": "32.04",
+    "label": "Bandung",
+    "postalCode": "40375"
+  },
+  {
+    "id": "32.05",
+    "label": "Garut",
+    "postalCode": "44188"
+  },
+  {
+    "id": "32.06",
+    "label": "Tasikmalaya",
+    "postalCode": "46187"
+  },
+  {
+    "id": "32.07",
+    "label": "Ciamis",
+    "postalCode": "46255"
+  },
+  {
+    "id": "32.08",
+    "label": "Kuningan",
+    "postalCode": "45591"
+  },
+  {
+    "id": "32.09",
+    "label": "Cirebon",
+    "postalCode": "45158"
+  },
+  {
+    "id": "32.10",
+    "label": "Majalengka",
+    "postalCode": "45465"
+  },
+  {
+    "id": "32.11",
+    "label": "Sumedang",
+    "postalCode": "45371"
+  },
+  {
+    "id": "32.12",
+    "label": "Indramayu",
+    "postalCode": "45273"
+  },
+  {
+    "id": "32.13",
+    "label": "Subang",
+    "postalCode": "41271"
+  },
+  {
+    "id": "32.14",
+    "label": "Purwakarta",
+    "postalCode": "41162"
+  },
+  {
+    "id": "32.15",
+    "label": "Karawang",
+    "postalCode": "41375"
+  },
+  {
+    "id": "32.16",
+    "label": "Bekasi",
+    "postalCode": "17710"
+  },
+  {
+    "id": "32.17",
+    "label": "Bandung Barat",
+    "postalCode": "40391"
+  },
+  {
+    "id": "32.18",
+    "label": "Pangandaran",
+    "postalCode": "46391"
+  },
+  {
+    "id": "32.71",
+    "label": "Kota Bogor",
+    "postalCode": "16164"
+  },
+  {
+    "id": "32.72",
+    "label": "Kota Sukabumi",
+    "postalCode": "43121"
+  },
+  {
+    "id": "32.73",
+    "label": "Kota Bandung",
+    "postalCode": "40614"
+  },
+  {
+    "id": "32.74",
+    "label": "Kota Cirebon",
+    "postalCode": "45121"
+  },
+  {
+    "id": "32.75",
+    "label": "Kota Bekasi",
+    "postalCode": "17111"
+  },
+  {
+    "id": "32.76",
+    "label": "Kota Depok",
+    "postalCode": "16516"
+  },
+  {
+    "id": "32.77",
+    "label": "Kota Cimahi",
+    "postalCode": "40534"
+  },
+  {
+    "id": "32.78",
+    "label": "Kota Tasikmalaya",
+    "postalCode": "46151"
+  },
+  {
+    "id": "32.79",
+    "label": "Kota Banjar",
+    "postalCode": "46323"
+  },
+  {
+    "id": "33.01",
+    "label": "Cilacap",
+    "postalCode": "53283"
+  },
+  {
+    "id": "33.02",
+    "label": "Banyumas",
+    "postalCode": "53162"
+  },
+  {
+    "id": "33.03",
+    "label": "Purbalingga",
+    "postalCode": "53381"
+  },
+  {
+    "id": "33.04",
+    "label": "Banjarnegara",
+    "postalCode": "53482"
+  },
+  {
+    "id": "33.05",
+    "label": "Kebumen",
+    "postalCode": "54392"
+  },
+  {
+    "id": "33.06",
+    "label": "Purworejo",
+    "postalCode": "54172"
+  },
+  {
+    "id": "33.07",
+    "label": "Wonosobo",
+    "postalCode": "56361"
+  },
+  {
+    "id": "33.08",
+    "label": "Magelang",
+    "postalCode": "56163"
+  },
+  {
+    "id": "33.09",
+    "label": "Boyolali",
+    "postalCode": "57331"
+  },
+  {
+    "id": "33.10",
+    "label": "Klaten",
+    "postalCode": "57463"
+  },
+  {
+    "id": "33.11",
+    "label": "Sukoharjo",
+    "postalCode": "57571"
+  },
+  {
+    "id": "33.12",
+    "label": "Wonogiri",
+    "postalCode": "57664"
+  },
+  {
+    "id": "33.13",
+    "label": "Karanganyar",
+    "postalCode": "57188"
+  },
+  {
+    "id": "33.14",
+    "label": "Sragen",
+    "postalCode": "57283"
+  },
+  {
+    "id": "33.15",
+    "label": "Grobogan",
+    "postalCode": "58162"
+  },
+  {
+    "id": "33.16",
+    "label": "Blora",
+    "postalCode": "58254"
+  },
+  {
+    "id": "33.17",
+    "label": "Rembang",
+    "postalCode": "59273"
+  },
+  {
+    "id": "33.18",
+    "label": "Pati",
+    "postalCode": "59181"
+  },
+  {
+    "id": "33.19",
+    "label": "Kudus",
+    "postalCode": "59353"
+  },
+  {
+    "id": "33.20",
+    "label": "Jepara",
+    "postalCode": "59463"
+  },
+  {
+    "id": "33.21",
+    "label": "Demak",
+    "postalCode": "59571"
+  },
+  {
+    "id": "33.22",
+    "label": "Semarang",
+    "postalCode": "50771"
+  },
+  {
+    "id": "33.23",
+    "label": "Temanggung",
+    "postalCode": "56255"
+  },
+  {
+    "id": "33.24",
+    "label": "Kendal",
+    "postalCode": "51363"
+  },
+  {
+    "id": "33.25",
+    "label": "Batang",
+    "postalCode": "51271"
+  },
+  {
+    "id": "33.26",
+    "label": "Pekalongan",
+    "postalCode": "51161"
+  },
+  {
+    "id": "33.27",
+    "label": "Pemalang",
+    "postalCode": "52361"
+  },
+  {
+    "id": "33.28",
+    "label": "Tegal",
+    "postalCode": "52471"
+  },
+  {
+    "id": "33.29",
+    "label": "Brebes",
+    "postalCode": "52265"
+  },
+  {
+    "id": "33.71",
+    "label": "Kota Magelang",
+    "postalCode": "56123"
+  },
+  {
+    "id": "33.72",
+    "label": "Kota Surakarta",
+    "postalCode": "57129"
+  },
+  {
+    "id": "33.73",
+    "label": "Kota Salatiga",
+    "postalCode": "50742"
+  },
+  {
+    "id": "33.74",
+    "label": "Kota Semarang",
+    "postalCode": "50149"
+  },
+  {
+    "id": "33.75",
+    "label": "Kota Pekalongan",
+    "postalCode": "51111"
+  },
+  {
+    "id": "33.76",
+    "label": "Kota Tegal",
+    "postalCode": "52147"
+  },
+  {
+    "id": "34.01",
+    "label": "Kulon Progo",
+    "postalCode": "55654"
+  },
+  {
+    "id": "34.02",
+    "label": "Bantul",
+    "postalCode": "55782"
+  },
+  {
+    "id": "34.03",
+    "label": "Gunungkidul",
+    "postalCode": "55861"
+  },
+  {
+    "id": "34.04",
+    "label": "Sleman",
+    "postalCode": "55552"
+  },
+  {
+    "id": "34.71",
+    "label": "Kota Yogyakarta",
+    "postalCode": "55242"
+  },
+  {
+    "id": "35.01",
+    "label": "Pacitan",
+    "postalCode": "63561"
+  },
+  {
+    "id": "35.02",
+    "label": "Ponorogo",
+    "postalCode": "63463"
+  },
+  {
+    "id": "35.03",
+    "label": "Trenggalek",
+    "postalCode": "66364"
+  },
+  {
+    "id": "35.04",
+    "label": "Tulungagung",
+    "postalCode": "66263"
+  },
+  {
+    "id": "35.05",
+    "label": "Blitar",
+    "postalCode": "66152"
+  },
+  {
+    "id": "35.06",
+    "label": "Kediri",
+    "postalCode": "64181"
+  },
+  {
+    "id": "35.07",
+    "label": "Malang",
+    "postalCode": "65157"
+  },
+  {
+    "id": "35.08",
+    "label": "Lumajang",
+    "postalCode": "67316"
+  },
+  {
+    "id": "35.09",
+    "label": "Jember",
+    "postalCode": "68164"
+  },
+  {
+    "id": "35.10",
+    "label": "Banyuwangi",
+    "postalCode": "68461"
+  },
+  {
+    "id": "35.11",
+    "label": "Bondowoso",
+    "postalCode": "68263"
+  },
+  {
+    "id": "35.12",
+    "label": "Situbondo",
+    "postalCode": "68356"
+  },
+  {
+    "id": "35.13",
+    "label": "Probolinggo",
+    "postalCode": "67291"
+  },
+  {
+    "id": "35.14",
+    "label": "Pasuruan",
+    "postalCode": "67172"
+  },
+  {
+    "id": "35.15",
+    "label": "Sidoarjo",
+    "postalCode": "61271"
+  },
+  {
+    "id": "35.16",
+    "label": "Mojokerto",
+    "postalCode": "61374"
+  },
+  {
+    "id": "35.17",
+    "label": "Jombang",
+    "postalCode": "61483"
+  },
+  {
+    "id": "35.18",
+    "label": "Nganjuk",
+    "postalCode": "64453"
+  },
+  {
+    "id": "35.19",
+    "label": "Madiun",
+    "postalCode": "63171"
+  },
+  {
+    "id": "35.20",
+    "label": "Magetan",
+    "postalCode": "63395"
+  },
+  {
+    "id": "35.21",
+    "label": "Ngawi",
+    "postalCode": "63284"
+  },
+  {
+    "id": "35.22",
+    "label": "Bojonegoro",
+    "postalCode": "62191"
+  },
+  {
+    "id": "35.23",
+    "label": "Tuban",
+    "postalCode": "62354"
+  },
+  {
+    "id": "35.24",
+    "label": "Lamongan",
+    "postalCode": "62292"
+  },
+  {
+    "id": "35.25",
+    "label": "Gresik",
+    "postalCode": "61155"
+  },
+  {
+    "id": "35.26",
+    "label": "Bangkalan",
+    "postalCode": "69172"
+  },
+  {
+    "id": "35.27",
+    "label": "Sampang",
+    "postalCode": "69291"
+  },
+  {
+    "id": "35.28",
+    "label": "Pamekasan",
+    "postalCode": "69363"
+  },
+  {
+    "id": "35.29",
+    "label": "Sumenep",
+    "postalCode": "69466"
+  },
+  {
+    "id": "35.71",
+    "label": "Kota Kediri",
+    "postalCode": "64129"
+  },
+  {
+    "id": "35.72",
+    "label": "Kota Blitar",
+    "postalCode": "66117"
+  },
+  {
+    "id": "35.73",
+    "label": "Kota Malang",
+    "postalCode": "65126"
+  },
+  {
+    "id": "35.74",
+    "label": "Kota Probolinggo",
+    "postalCode": "67239"
+  },
+  {
+    "id": "35.75",
+    "label": "Kota Pasuruan",
+    "postalCode": "67129"
+  },
+  {
+    "id": "35.76",
+    "label": "Kota Mojokerto",
+    "postalCode": "61315"
+  },
+  {
+    "id": "35.77",
+    "label": "Kota Madiun",
+    "postalCode": "63119"
+  },
+  {
+    "id": "35.78",
+    "label": "Kota Surabaya",
+    "postalCode": "60293"
+  },
+  {
+    "id": "35.79",
+    "label": "Kota Batu",
+    "postalCode": "65338"
+  },
+  {
+    "id": "36.01",
+    "label": "Pandeglang",
+    "postalCode": "42275"
+  },
+  {
+    "id": "36.02",
+    "label": "Lebak",
+    "postalCode": "42394"
+  },
+  {
+    "id": "36.03",
+    "label": "Tangerang",
+    "postalCode": "15721"
+  },
+  {
+    "id": "36.04",
+    "label": "Serang",
+    "postalCode": "42175"
+  },
+  {
+    "id": "36.71",
+    "label": "Kota Tangerang",
+    "postalCode": "15122"
+  },
+  {
+    "id": "36.72",
+    "label": "Kota Cilegon",
+    "postalCode": "42438"
+  },
+  {
+    "id": "36.73",
+    "label": "Kota Serang",
+    "postalCode": "42183"
+  },
+  {
+    "id": "36.74",
+    "label": "Kota Tangerang Selatan",
+    "postalCode": "15310"
+  },
+  {
+    "id": "51.01",
+    "label": "Jembrana",
+    "postalCode": "82218"
+  },
+  {
+    "id": "51.02",
+    "label": "Tabanan",
+    "postalCode": "82152"
+  },
+  {
+    "id": "51.03",
+    "label": "Badung",
+    "postalCode": "80351"
+  },
+  {
+    "id": "51.04",
+    "label": "Gianyar",
+    "postalCode": "80515"
+  },
+  {
+    "id": "51.05",
+    "label": "Klungkung",
+    "postalCode": "80771"
+  },
+  {
+    "id": "51.06",
+    "label": "Bangli",
+    "postalCode": "80652"
+  },
+  {
+    "id": "51.07",
+    "label": "Karangasem",
+    "postalCode": "80852"
+  },
+  {
+    "id": "51.08",
+    "label": "Buleleng",
+    "postalCode": "81153"
+  },
+  {
+    "id": "51.71",
+    "label": "Kota Denpasar",
+    "postalCode": "80119"
+  },
+  {
+    "id": "52.01",
+    "label": "Lombok Barat",
+    "postalCode": "83370"
+  },
+  {
+    "id": "52.02",
+    "label": "Lombok Tengah",
+    "postalCode": "83573"
+  },
+  {
+    "id": "52.03",
+    "label": "Lombok Timur",
+    "postalCode": "83653"
+  },
+  {
+    "id": "52.04",
+    "label": "Sumbawa",
+    "postalCode": "84371"
+  },
+  {
+    "id": "52.05",
+    "label": "Dompu",
+    "postalCode": "84260"
+  },
+  {
+    "id": "52.06",
+    "label": "Bima",
+    "postalCode": "84183"
+  },
+  {
+    "id": "52.07",
+    "label": "Sumbawa Barat",
+    "postalCode": "84452"
+  },
+  {
+    "id": "52.08",
+    "label": "Lombok Utara",
+    "postalCode": "83354"
+  },
+  {
+    "id": "52.71",
+    "label": "Kota Mataram",
+    "postalCode": "83127"
+  },
+  {
+    "id": "52.72",
+    "label": "Kota Bima",
+    "postalCode": "84119"
+  },
+  {
+    "id": "53.01",
+    "label": "Kupang",
+    "postalCode": "85362"
+  },
+  {
+    "id": "53.02",
+    "label": "Timor Tengah Selatan",
+    "postalCode": "85552"
+  },
+  {
+    "id": "53.03",
+    "label": "Timor Tengah Utara",
+    "postalCode": "85671"
+  },
+  {
+    "id": "53.04",
+    "label": "Belu",
+    "postalCode": "85771"
+  },
+  {
+    "id": "53.05",
+    "label": "Alor",
+    "postalCode": "85851"
+  },
+  {
+    "id": "53.06",
+    "label": "Flores Timur",
+    "postalCode": "86261"
+  },
+  {
+    "id": "53.07",
+    "label": "Sikka",
+    "postalCode": "86116"
+  },
+  {
+    "id": "53.08",
+    "label": "Ende",
+    "postalCode": "86319"
+  },
+  {
+    "id": "53.09",
+    "label": "Ngada",
+    "postalCode": "86413"
+  },
+  {
+    "id": "53.10",
+    "label": "Manggarai",
+    "postalCode": "86561"
+  },
+  {
+    "id": "53.11",
+    "label": "Sumba Timur",
+    "postalCode": "87171"
+  },
+  {
+    "id": "53.12",
+    "label": "Sumba Barat",
+    "postalCode": "87257"
+  },
+  {
+    "id": "53.13",
+    "label": "Lembata",
+    "postalCode": "86691"
+  },
+  {
+    "id": "53.14",
+    "label": "Rote Ndao",
+    "postalCode": "85981"
+  },
+  {
+    "id": "53.15",
+    "label": "Manggarai Barat",
+    "postalCode": "86763"
+  },
+  {
+    "id": "53.16",
+    "label": "Nagekeo",
+    "postalCode": "86462"
+  },
+  {
+    "id": "53.17",
+    "label": "Sumba Tengah",
+    "postalCode": "87281"
+  },
+  {
+    "id": "53.18",
+    "label": "Sumba Barat Daya",
+    "postalCode": "87264"
+  },
+  {
+    "id": "53.19",
+    "label": "Manggarai Timur",
+    "postalCode": "86582"
+  },
+  {
+    "id": "53.20",
+    "label": "Sabu Raijua",
+    "postalCode": "85395"
+  },
+  {
+    "id": "53.21",
+    "label": "Malaka",
+    "postalCode": "85764"
+  },
+  {
+    "id": "53.71",
+    "label": "Kota Kupang",
+    "postalCode": "85111"
+  },
+  {
+    "id": "61.01",
+    "label": "Sambas",
+    "postalCode": "79469"
+  },
+  {
+    "id": "61.02",
+    "label": "Mempawah",
+    "postalCode": "78371"
+  },
+  {
+    "id": "61.03",
+    "label": "Sanggau",
+    "postalCode": "78516"
+  },
+  {
+    "id": "61.04",
+    "label": "Ketapang",
+    "postalCode": "78877"
+  },
+  {
+    "id": "61.05",
+    "label": "Sintang",
+    "postalCode": "78693"
+  },
+  {
+    "id": "61.06",
+    "label": "Kapuas Hulu",
+    "postalCode": "78716"
+  },
+  {
+    "id": "61.07",
+    "label": "Bengkayang",
+    "postalCode": "79214"
+  },
+  {
+    "id": "61.08",
+    "label": "Landak",
+    "postalCode": "79354"
+  },
+  {
+    "id": "61.09",
+    "label": "Sekadau",
+    "postalCode": "79583"
+  },
+  {
+    "id": "61.10",
+    "label": "Melawi",
+    "postalCode": "79681"
+  },
+  {
+    "id": "61.11",
+    "label": "Kayong Utara",
+    "postalCode": "78853"
+  },
+  {
+    "id": "61.12",
+    "label": "Kubu Raya",
+    "postalCode": "78391"
+  },
+  {
+    "id": "61.71",
+    "label": "Kota Pontianak",
+    "postalCode": "78124"
+  },
+  {
+    "id": "61.72",
+    "label": "Kota Singkawang",
+    "postalCode": "79151"
+  },
+  {
+    "id": "62.01",
+    "label": "Kotawaringin Barat",
+    "postalCode": "74181"
+  },
+  {
+    "id": "62.02",
+    "label": "Kotawaringin Timur",
+    "postalCode": "74352"
+  },
+  {
+    "id": "62.03",
+    "label": "Kapuas",
+    "postalCode": "73553"
+  },
+  {
+    "id": "62.04",
+    "label": "Barito Selatan",
+    "postalCode": "73753"
+  },
+  {
+    "id": "62.05",
+    "label": "Barito Utara",
+    "postalCode": "73814"
+  },
+  {
+    "id": "62.06",
+    "label": "Katingan",
+    "postalCode": "74458"
+  },
+  {
+    "id": "62.07",
+    "label": "Seruyan",
+    "postalCode": "74280"
+  },
+  {
+    "id": "62.08",
+    "label": "Sukamara",
+    "postalCode": "74172"
+  },
+  {
+    "id": "62.09",
+    "label": "Lamandau",
+    "postalCode": "74162"
+  },
+  {
+    "id": "62.10",
+    "label": "Gunung Mas",
+    "postalCode": "74561"
+  },
+  {
+    "id": "62.11",
+    "label": "Pulang Pisau",
+    "postalCode": "74871"
+  },
+  {
+    "id": "62.12",
+    "label": "Murung Raya",
+    "postalCode": "73961"
+  },
+  {
+    "id": "62.13",
+    "label": "Barito Timur",
+    "postalCode": "73617"
+  },
+  {
+    "id": "62.71",
+    "label": "Kota Palangkaraya",
+    "postalCode": "73111"
+  },
+  {
+    "id": "63.01",
+    "label": "Tanah Laut",
+    "postalCode": "70815"
+  },
+  {
+    "id": "63.02",
+    "label": "Kotabaru",
+    "postalCode": "72169"
+  },
+  {
+    "id": "63.03",
+    "label": "Banjar",
+    "postalCode": "70661"
+  },
+  {
+    "id": "63.04",
+    "label": "Barito Kuala",
+    "postalCode": "70582"
+  },
+  {
+    "id": "63.05",
+    "label": "Tapin",
+    "postalCode": "71161"
+  },
+  {
+    "id": "63.06",
+    "label": "Hulu Sungai Selatan",
+    "postalCode": "71253"
+  },
+  {
+    "id": "63.07",
+    "label": "Hulu Sungai Tengah",
+    "postalCode": "71352"
+  },
+  {
+    "id": "63.08",
+    "label": "Hulu Sungai Utara",
+    "postalCode": "71455"
+  },
+  {
+    "id": "63.09",
+    "label": "Tabalong",
+    "postalCode": "71553"
+  },
+  {
+    "id": "63.10",
+    "label": "Tanah Bumbu",
+    "postalCode": "72273"
+  },
+  {
+    "id": "63.11",
+    "label": "Balangan",
+    "postalCode": "71662"
+  },
+  {
+    "id": "63.71",
+    "label": "Kota Banjarmasin",
+    "postalCode": "70247"
+  },
+  {
+    "id": "63.72",
+    "label": "Kota Banjarbaru",
+    "postalCode": "70714"
+  },
+  {
+    "id": "64.01",
+    "label": "Paser",
+    "postalCode": "76282"
+  },
+  {
+    "id": "64.02",
+    "label": "Kutai Kartanegara",
+    "postalCode": "75561"
+  },
+  {
+    "id": "64.03",
+    "label": "Berau",
+    "postalCode": "77362"
+  },
+  {
+    "id": "64.07",
+    "label": "Kutai Barat",
+    "postalCode": "75776"
+  },
+  {
+    "id": "64.08",
+    "label": "Kutai Timur",
+    "postalCode": "75656"
+  },
+  {
+    "id": "64.09",
+    "label": "Penajam Paser Utara",
+    "postalCode": "76285"
+  },
+  {
+    "id": "64.11",
+    "label": "Mahakam Ulu",
+    "postalCode": "75768"
+  },
+  {
+    "id": "64.71",
+    "label": "Kota Balikpapan",
+    "postalCode": "76114"
+  },
+  {
+    "id": "64.72",
+    "label": "Kota Samarinda",
+    "postalCode": "75119"
+  },
+  {
+    "id": "64.74",
+    "label": "Kota Bontang",
+    "postalCode": "75325"
+  },
+  {
+    "id": "65.01",
+    "label": "Bulungan",
+    "postalCode": "77263"
+  },
+  {
+    "id": "65.02",
+    "label": "Malinau",
+    "postalCode": "77557"
+  },
+  {
+    "id": "65.03",
+    "label": "Nunukan",
+    "postalCode": "77450"
+  },
+  {
+    "id": "65.04",
+    "label": "Tana Tidung",
+    "postalCode": "77153"
+  },
+  {
+    "id": "65.71",
+    "label": "Kota Tarakan",
+    "postalCode": "77113"
+  },
+  {
+    "id": "71.01",
+    "label": "Bolaang Mongondow",
+    "postalCode": "95741"
+  },
+  {
+    "id": "71.02",
+    "label": "Minahasa",
+    "postalCode": "95691"
+  },
+  {
+    "id": "71.03",
+    "label": "Kepulauan Sangihe",
+    "postalCode": "95856"
+  },
+  {
+    "id": "71.04",
+    "label": "Kepulauan Talaud",
+    "postalCode": "95888"
+  },
+  {
+    "id": "71.05",
+    "label": "Minahasa Selatan",
+    "postalCode": "95355"
+  },
+  {
+    "id": "71.06",
+    "label": "Minahasa Utara",
+    "postalCode": "95376"
+  },
+  {
+    "id": "71.07",
+    "label": "Minahasa Tenggara",
+    "postalCode": "95992"
+  },
+  {
+    "id": "71.08",
+    "label": "Bolaang Mongondow Utara",
+    "postalCode": "95766"
+  },
+  {
+    "id": "71.09",
+    "label": "Kepulauan Siau Tagulandang Biaro",
+    "postalCode": "95861"
+  },
+  {
+    "id": "71.10",
+    "label": "Bolaang Mongondow Timur",
+    "postalCode": "95782"
+  },
+  {
+    "id": "71.11",
+    "label": "Bolaang Mongondow Selatan",
+    "postalCode": "95770"
+  },
+  {
+    "id": "71.71",
+    "label": "Kota Manado",
+    "postalCode": "95231"
+  },
+  {
+    "id": "71.72",
+    "label": "Kota Bitung",
+    "postalCode": "95551"
+  },
+  {
+    "id": "71.73",
+    "label": "Kota Tomohon",
+    "postalCode": "95439"
+  },
+  {
+    "id": "71.74",
+    "label": "Kota Kotamobagu",
+    "postalCode": "95717"
+  },
+  {
+    "id": "72.01",
+    "label": "Banggai",
+    "postalCode": "94751"
+  },
+  {
+    "id": "72.02",
+    "label": "Poso",
+    "postalCode": "94652"
+  },
+  {
+    "id": "72.03",
+    "label": "Donggala",
+    "postalCode": "94350"
+  },
+  {
+    "id": "72.04",
+    "label": "Toli Toli",
+    "postalCode": "94551"
+  },
+  {
+    "id": "72.05",
+    "label": "Buol",
+    "postalCode": "94565"
+  },
+  {
+    "id": "72.06",
+    "label": "Morowali",
+    "postalCode": "94979"
+  },
+  {
+    "id": "72.07",
+    "label": "Banggai Kepulauan",
+    "postalCode": "94882"
+  },
+  {
+    "id": "72.08",
+    "label": "Parigi Moutong",
+    "postalCode": "94481"
+  },
+  {
+    "id": "72.09",
+    "label": "Tojo Una Una",
+    "postalCode": "94684"
+  },
+  {
+    "id": "72.10",
+    "label": "Sigi",
+    "postalCode": "94366"
+  },
+  {
+    "id": "72.11",
+    "label": "Banggai Laut",
+    "postalCode": "94894"
+  },
+  {
+    "id": "72.12",
+    "label": "Morowali Utara",
+    "postalCode": "94972"
+  },
+  {
+    "id": "72.71",
+    "label": "Kota Palu",
+    "postalCode": "94111"
+  },
+  {
+    "id": "73.01",
+    "label": "Kepulauan Selayar",
+    "postalCode": "92854"
+  },
+  {
+    "id": "73.02",
+    "label": "Bulukumba",
+    "postalCode": "92561"
+  },
+  {
+    "id": "73.03",
+    "label": "Bantaeng",
+    "postalCode": "92451"
+  },
+  {
+    "id": "73.04",
+    "label": "Jeneponto",
+    "postalCode": "92371"
+  },
+  {
+    "id": "73.05",
+    "label": "Takalar",
+    "postalCode": "92254"
+  },
+  {
+    "id": "73.06",
+    "label": "Gowa",
+    "postalCode": "92161"
+  },
+  {
+    "id": "73.07",
+    "label": "Sinjai",
+    "postalCode": "92671"
+  },
+  {
+    "id": "73.08",
+    "label": "Bone",
+    "postalCode": "92771"
+  },
+  {
+    "id": "73.09",
+    "label": "Maros",
+    "postalCode": "90563"
+  },
+  {
+    "id": "73.10",
+    "label": "Pangkajene Kepulauan",
+    "postalCode": "90653"
+  },
+  {
+    "id": "73.11",
+    "label": "Barru",
+    "postalCode": "90761"
+  },
+  {
+    "id": "73.12",
+    "label": "Soppeng",
+    "postalCode": "90862"
+  },
+  {
+    "id": "73.13",
+    "label": "Wajo",
+    "postalCode": "90992"
+  },
+  {
+    "id": "73.14",
+    "label": "Sidenreng Rappang",
+    "postalCode": "91683"
+  },
+  {
+    "id": "73.15",
+    "label": "Pinrang",
+    "postalCode": "91254"
+  },
+  {
+    "id": "73.16",
+    "label": "Enrekang",
+    "postalCode": "91711"
+  },
+  {
+    "id": "73.17",
+    "label": "Luwu",
+    "postalCode": "91952"
+  },
+  {
+    "id": "73.18",
+    "label": "Tana Toraja",
+    "postalCode": "91870"
+  },
+  {
+    "id": "73.22",
+    "label": "Luwu Utara",
+    "postalCode": "92963"
+  },
+  {
+    "id": "73.24",
+    "label": "Luwu Timur",
+    "postalCode": "92982"
+  },
+  {
+    "id": "73.26",
+    "label": "Toraja Utara",
+    "postalCode": "91847"
+  },
+  {
+    "id": "73.71",
+    "label": "Kota Makassar",
+    "postalCode": "90222"
+  },
+  {
+    "id": "73.72",
+    "label": "Kota Pare Pare",
+    "postalCode": "91121"
+  },
+  {
+    "id": "73.73",
+    "label": "Kota Palopo",
+    "postalCode": "91921"
+  },
+  {
+    "id": "74.01",
+    "label": "Kolaka",
+    "postalCode": "93521"
+  },
+  {
+    "id": "74.02",
+    "label": "Konawe",
+    "postalCode": "93464"
+  },
+  {
+    "id": "74.03",
+    "label": "Muna",
+    "postalCode": "93662"
+  },
+  {
+    "id": "74.04",
+    "label": "Buton",
+    "postalCode": "93752"
+  },
+  {
+    "id": "74.05",
+    "label": "Konawe Selatan",
+    "postalCode": "93886"
+  },
+  {
+    "id": "74.06",
+    "label": "Bombana",
+    "postalCode": "93772"
+  },
+  {
+    "id": "74.07",
+    "label": "Wakatobi",
+    "postalCode": "93795"
+  },
+  {
+    "id": "74.08",
+    "label": "Kolaka Utara",
+    "postalCode": "93916"
+  },
+  {
+    "id": "74.09",
+    "label": "Konawe Utara",
+    "postalCode": "93355"
+  },
+  {
+    "id": "74.10",
+    "label": "Buton Utara",
+    "postalCode": "93672"
+  },
+  {
+    "id": "74.11",
+    "label": "Kolaka Timur",
+    "postalCode": "93582"
+  },
+  {
+    "id": "74.12",
+    "label": "Konawe Kepulauan",
+    "postalCode": "93398"
+  },
+  {
+    "id": "74.13",
+    "label": "Muna Barat",
+    "postalCode": "93657"
+  },
+  {
+    "id": "74.14",
+    "label": "Buton Tengah",
+    "postalCode": "93762"
+  },
+  {
+    "id": "74.15",
+    "label": "Buton Selatan",
+    "postalCode": "93747"
+  },
+  {
+    "id": "74.71",
+    "label": "Kota Kendari",
+    "postalCode": "93121"
+  },
+  {
+    "id": "74.72",
+    "label": "Kota Bau Bau",
+    "postalCode": "93721"
+  },
+  {
+    "id": "75.01",
+    "label": "Gorontalo",
+    "postalCode": "96231"
+  },
+  {
+    "id": "75.02",
+    "label": "Boalemo",
+    "postalCode": "96260"
+  },
+  {
+    "id": "75.03",
+    "label": "Bone Bolango",
+    "postalCode": "96554"
+  },
+  {
+    "id": "75.04",
+    "label": "Pahuwato",
+    "postalCode": "96469"
+  },
+  {
+    "id": "75.05",
+    "label": "Gorontalo Utara",
+    "postalCode": "96518"
+  },
+  {
+    "id": "75.71",
+    "label": "Kota Gorontalo",
+    "postalCode": "96111"
+  },
+  {
+    "id": "76.01",
+    "label": "Pasangkayu",
+    "postalCode": "91578"
+  },
+  {
+    "id": "76.02",
+    "label": "Mamuju",
+    "postalCode": "91561"
+  },
+  {
+    "id": "76.03",
+    "label": "Mamasa",
+    "postalCode": "91371"
+  },
+  {
+    "id": "76.04",
+    "label": "Polewali Mandar",
+    "postalCode": "91357"
+  },
+  {
+    "id": "76.05",
+    "label": "Majene",
+    "postalCode": "91452"
+  },
+  {
+    "id": "76.06",
+    "label": "Mamuju Tengah",
+    "postalCode": "91464"
+  },
+  {
+    "id": "81.01",
+    "label": "Maluku Tengah",
+    "postalCode": "97531"
+  },
+  {
+    "id": "81.02",
+    "label": "Maluku Tenggara",
+    "postalCode": "97631"
+  },
+  {
+    "id": "81.03",
+    "label": "Kepulauan Tanimbar",
+    "postalCode": "97471"
+  },
+  {
+    "id": "81.04",
+    "label": "Buru",
+    "postalCode": "97575"
+  },
+  {
+    "id": "81.05",
+    "label": "Seram Bagian Timur",
+    "postalCode": "97593"
+  },
+  {
+    "id": "81.06",
+    "label": "Seram Bagian Barat",
+    "postalCode": "97559"
+  },
+  {
+    "id": "81.07",
+    "label": "Kepulauan Aru",
+    "postalCode": "97661"
+  },
+  {
+    "id": "81.08",
+    "label": "Maluku Barat Daya",
+    "postalCode": "97652"
+  },
+  {
+    "id": "81.09",
+    "label": "Buru Selatan",
+    "postalCode": "97543"
+  },
+  {
+    "id": "81.71",
+    "label": "Kota Ambon",
+    "postalCode": "97129"
+  },
+  {
+    "id": "81.72",
+    "label": "Kota Tual",
+    "postalCode": "97612"
+  },
+  {
+    "id": "82.01",
+    "label": "Halmahera Barat",
+    "postalCode": "97752"
+  },
+  {
+    "id": "82.02",
+    "label": "Halmahera Tengah",
+    "postalCode": "97859"
+  },
+  {
+    "id": "82.03",
+    "label": "Halmahera Utara",
+    "postalCode": "97764"
+  },
+  {
+    "id": "82.04",
+    "label": "Halmahera Selatan",
+    "postalCode": "97791"
+  },
+  {
+    "id": "82.05",
+    "label": "Kepulauan Sula",
+    "postalCode": "97793"
+  },
+  {
+    "id": "82.06",
+    "label": "Halmahera Timur",
+    "postalCode": "97866"
+  },
+  {
+    "id": "82.07",
+    "label": "Pulau Morotai",
+    "postalCode": "97771"
+  },
+  {
+    "id": "82.08",
+    "label": "Pulau Taliabu",
+    "postalCode": "97794"
+  },
+  {
+    "id": "82.71",
+    "label": "Kota Ternate",
+    "postalCode": "97747"
+  },
+  {
+    "id": "82.72",
+    "label": "Kota Tidore Kepulauan",
+    "postalCode": "97823"
+  },
+  {
+    "id": "91.01",
+    "label": "Merauke",
+    "postalCode": "99641"
+  },
+  {
+    "id": "91.02",
+    "label": "Jayawijaya",
+    "postalCode": "99521"
+  },
+  {
+    "id": "91.03",
+    "label": "Jayapura",
+    "postalCode": "99361"
+  },
+  {
+    "id": "91.04",
+    "label": "Nabire",
+    "postalCode": "98853"
+  },
+  {
+    "id": "91.05",
+    "label": "Kepulauan Yapen",
+    "postalCode": "98653"
+  },
+  {
+    "id": "91.06",
+    "label": "Biak Numfor",
+    "postalCode": "98541"
+  },
+  {
+    "id": "91.07",
+    "label": "Puncak Jaya",
+    "postalCode": "98922"
+  },
+  {
+    "id": "91.08",
+    "label": "Paniai",
+    "postalCode": "98724"
+  },
+  {
+    "id": "91.09",
+    "label": "Mimika",
+    "postalCode": "99952"
+  },
+  {
+    "id": "91.10",
+    "label": "Sarmi",
+    "postalCode": "99375"
+  },
+  {
+    "id": "91.11",
+    "label": "Keerom",
+    "postalCode": "99471"
+  },
+  {
+    "id": "91.12",
+    "label": "Pegunungan Bintang",
+    "postalCode": "99453"
+  },
+  {
+    "id": "91.13",
+    "label": "Yahukimo",
+    "postalCode": "99705"
+  },
+  {
+    "id": "91.14",
+    "label": "Tolikara",
+    "postalCode": "99046"
+  },
+  {
+    "id": "91.15",
+    "label": "Waropen",
+    "postalCode": "98663"
+  },
+  {
+    "id": "91.16",
+    "label": "Boven Digoel",
+    "postalCode": "99663"
+  },
+  {
+    "id": "91.17",
+    "label": "Mappi",
+    "postalCode": "99870"
+  },
+  {
+    "id": "91.18",
+    "label": "Asmat",
+    "postalCode": "99792"
+  },
+  {
+    "id": "91.19",
+    "label": "Supiori",
+    "postalCode": "98573"
+  },
+  {
+    "id": "91.20",
+    "label": "Mamberamo Raya",
+    "postalCode": "98692"
+  },
+  {
+    "id": "91.21",
+    "label": "Mamberamo Tengah",
+    "postalCode": "99072"
+  },
+  {
+    "id": "91.22",
+    "label": "Yalimo",
+    "postalCode": "99085"
+  },
+  {
+    "id": "91.23",
+    "label": "Lanny Jaya",
+    "postalCode": "99570"
+  },
+  {
+    "id": "91.24",
+    "label": "Nduga",
+    "postalCode": "99942"
+  },
+  {
+    "id": "91.25",
+    "label": "Puncak",
+    "postalCode": "98968"
+  },
+  {
+    "id": "91.26",
+    "label": "Dogiyai",
+    "postalCode": "98883"
+  },
+  {
+    "id": "91.27",
+    "label": "Intan Jaya",
+    "postalCode": "98791"
+  },
+  {
+    "id": "91.28",
+    "label": "Deiyai",
+    "postalCode": "98761"
+  },
+  {
+    "id": "91.71",
+    "label": "Kota Jayapura",
+    "postalCode": "99111"
+  },
+  {
+    "id": "92.01",
+    "label": "Sorong",
+    "postalCode": "98452"
+  },
+  {
+    "id": "92.02",
+    "label": "Manokwari",
+    "postalCode": "98318"
+  },
+  {
+    "id": "92.03",
+    "label": "Fak Fak",
+    "postalCode": "98016"
+  },
+  {
+    "id": "92.04",
+    "label": "Sorong Selatan",
+    "postalCode": "98216"
+  },
+  {
+    "id": "92.05",
+    "label": "Raja Ampat",
+    "postalCode": "98472"
+  },
+  {
+    "id": "92.06",
+    "label": "Teluk Bintuni",
+    "postalCode": "98163"
+  },
+  {
+    "id": "92.07",
+    "label": "Teluk Wondama",
+    "postalCode": "98346"
+  },
+  {
+    "id": "92.08",
+    "label": "Kaimana",
+    "postalCode": "98111"
+  },
+  {
+    "id": "92.09",
+    "label": "Tambrauw",
+    "postalCode": "98393"
+  },
+  {
+    "id": "92.10",
+    "label": "Maybrat",
+    "postalCode": "98271"
+  },
+  {
+    "id": "92.11",
+    "label": "Manokwari Selatan",
+    "postalCode": "98321"
+  },
+  {
+    "id": "92.12",
+    "label": "Pegunungan Arfak",
+    "postalCode": "98351"
+  },
+  {
+    "id": "92.71",
+    "label": "Kota Sorong",
+    "postalCode": "98415"
+  }
+]
