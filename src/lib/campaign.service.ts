@@ -7,13 +7,26 @@ import { fetchSheet, RANGE } from "./google-sheet";
 type RawCampaign = Record<string, string>;
 type RawStory = Record<string, string>;
 
+export type CampaignSectionType =
+  | "heading"
+  | "subheading"
+  | "text"
+  | "image"
+  | "quote"
+  | "list"
+  | "video"
+  | "highlight_box"
+  | "divider"
+  | "stats"
+  | "card_grid"
+  | "cta";
 
 export type Campaign = {
   id: string;
   slug: string;
   title: string;
   short_tagline: string;
-  hero_image_public_id: string; // sekarang FULL URL
+  hero_image_public_id: string;
   hero_video_url?: string;
   goal_amount: number;
   collected_amount: number;
@@ -26,20 +39,12 @@ export type Campaign = {
 export type CampaignStorySection = {
   id: string;
   campaign_id: string;
-  type:
-    | "heading"
-    | "subheading"
-    | "text"
-    | "image"
-    | "quote"
-    | "list"
-    | "video";
+  type: CampaignSectionType;
   content?: string;
   image_id?: string;
   video_url?: string;
   section_order: number;
 };
-
 
 /* =========================
    HELPERS
@@ -64,11 +69,11 @@ export async function getCampaignBySlug(
   const campaigns = await fetchSheet<RawCampaign>(RANGE.CAMPAIGNS);
   const stories = await fetchSheet<RawStory>(RANGE.CAMPAIGN_STORY);
 
-
   const rawCampaign = campaigns.find(
-  (c) => String(c.slug) === slug && String(c.status) === "active"
-);
-
+    (c) =>
+      String(c.slug).trim() === slug &&
+      String(c.status).trim().toLowerCase() === "active"
+  );
 
   if (!rawCampaign) return null;
 
@@ -77,64 +82,75 @@ export async function getCampaignBySlug(
   ========================= */
 
   const campaign: Campaign = {
-    id: String(rawCampaign.id),
-    slug: String(rawCampaign.slug),
-    title: String(rawCampaign.title),
-    short_tagline: String(rawCampaign.short_tagline),
-    hero_image_public_id: String(rawCampaign.hero_image_public_id ?? ""),
+    id: String(rawCampaign.id).trim(),
+    slug: String(rawCampaign.slug).trim(),
+    title: String(rawCampaign.title ?? "").trim(),
+    short_tagline: String(rawCampaign.short_tagline ?? "").trim(),
+    hero_image_public_id: String(
+      rawCampaign.hero_image_public_id ?? ""
+    ).trim(),
     hero_video_url: rawCampaign.hero_video_url
-      ? String(rawCampaign.hero_video_url)
+      ? String(rawCampaign.hero_video_url).trim()
       : undefined,
     goal_amount: toNumber(rawCampaign.goal_amount),
     collected_amount: toNumber(rawCampaign.collected_amount),
-    status: String(rawCampaign.status),
+    status: String(rawCampaign.status ?? "").trim(),
     seo_title: rawCampaign.seo_title
-      ? String(rawCampaign.seo_title)
+      ? String(rawCampaign.seo_title).trim()
       : undefined,
     seo_description: rawCampaign.seo_description
-      ? String(rawCampaign.seo_description)
+      ? String(rawCampaign.seo_description).trim()
       : undefined,
     stories: [],
   };
-
 
   /* =========================
      NORMALIZE STORIES
   ========================= */
 
-  const allowedTypes: CampaignStorySection["type"][] = [
-  "heading",
-  "subheading",
-  "text",
-  "image",
-  "quote",
-  "list",
-  "video",
-];
+  const allowedTypes: CampaignSectionType[] = [
+    "heading",
+    "subheading",
+    "text",
+    "image",
+    "quote",
+    "list",
+    "video",
+    "highlight_box",
+    "divider",
+    "stats",
+    "card_grid",
+    "cta",
+  ];
 
-const campaignStories: CampaignStorySection[] = stories
-  .filter((s) => String(s.campaign_id) === String(campaign.id))
-  .map((s) => {
-    const rawType = String(s.type ?? "")
-      .trim()
-      .toLowerCase();
+  const campaignStories: CampaignStorySection[] = stories
+    .filter(
+      (s) =>
+        String(s.campaign_id).trim() === campaign.id
+    )
+    .map((s) => {
+      const rawType = String(s.type ?? "")
+        .trim()
+        .toLowerCase();
 
-    const safeType: CampaignStorySection["type"] =
-      allowedTypes.includes(rawType as CampaignStorySection["type"])
-        ? (rawType as CampaignStorySection["type"])
-        : "text";
+      const safeType: CampaignSectionType =
+        allowedTypes.includes(rawType as CampaignSectionType)
+          ? (rawType as CampaignSectionType)
+          : "text";
 
-    return {
-      id: String(s.id ?? ""),
-      campaign_id: String(s.campaign_id ?? ""),
-      type: safeType,
-      content: String(s.content ?? ""),
-      image_id: String(s.image_id ?? ""),
-      video_url: String(s.video_url ?? ""),
-      section_order: Number(s.section_order ?? 0),
-    };
-  })
-  .sort((a, b) => a.section_order - b.section_order);
+      return {
+        id: String(s.id ?? "").trim(),
+        campaign_id: String(s.campaign_id ?? "").trim(),
+        type: safeType,
+        content: s.content ? String(s.content).trim() : undefined,
+        image_id: s.image_id ? String(s.image_id).trim() : undefined,
+        video_url: s.video_url
+          ? String(s.video_url).trim()
+          : undefined,
+        section_order: Number(s.section_order ?? 0),
+      };
+    })
+    .sort((a, b) => a.section_order - b.section_order);
 
   campaign.stories = campaignStories;
 
