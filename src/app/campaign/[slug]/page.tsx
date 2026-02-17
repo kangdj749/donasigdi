@@ -6,6 +6,7 @@ import CampaignProgress from "@/components/campaign/CampaignProgress";
 import CampaignStorySkeleton from "@/components/campaign/CampaignStorySkeleton";
 
 import { cookies } from "next/headers";
+import DonationSection from "./DonationSection";
 
 export const revalidate = 60;
 
@@ -42,10 +43,7 @@ export default async function CampaignPage({
     affiliateCode = incomingRef;
   }
 
-  const donateUrl = affiliateCode
-    ? `/donasi/${campaign.slug}?ref=${affiliateCode}`
-    : `/donasi/${campaign.slug}`;
-
+  
   // ===============================
   // RENDER
   // ===============================
@@ -121,15 +119,10 @@ export default async function CampaignPage({
         </div>
 
         {/* ================= STICKY DONATE CTA ================= */}
-        <div className="fixed bottom-0 left-0 right-0 flex justify-center backdrop-blur-md bg-white/80 border-t">
-          <div className="w-full max-w-md p-3">
-            <a href={donateUrl}>
-              <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-all duration-200 shadow-lg">
-                Donasi Sekarang
-              </button>
-            </a>
-          </div>
-        </div>
+        <DonationSection
+          campaignId={campaign.id}
+          affiliateCode={affiliateCode}
+        />
 
       </div>
     </div>

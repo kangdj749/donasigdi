@@ -1,5 +1,5 @@
 import { fetchSheet, RANGE } from "./google-sheet";
-
+import { setCache, getCache } from "./utils/cache";
 /* =========================
    TYPES
 ========================= */
@@ -26,6 +26,7 @@ export type Campaign = {
   slug: string;
   title: string;
   short_tagline: string;
+  category: string;
   hero_image_public_id: string;
   hero_video_url?: string;
   goal_amount: number;
@@ -64,8 +65,17 @@ function toNumber(value: unknown): number {
 ========================= */
 
 export async function getCampaignBySlug(
-  slug: string
+  slug: string,
+  preview = false
 ): Promise<Campaign | null> {
+
+  const cacheKey = `campaign:${slug}`;
+
+  if (!preview) {
+    const cached = getCache<Campaign>(cacheKey);
+    if (cached) return cached;
+  }
+
   const campaigns = await fetchSheet<RawCampaign>(RANGE.CAMPAIGNS);
   const stories = await fetchSheet<RawStory>(RANGE.CAMPAIGN_STORY);
 
@@ -86,6 +96,9 @@ export async function getCampaignBySlug(
     slug: String(rawCampaign.slug).trim(),
     title: String(rawCampaign.title ?? "").trim(),
     short_tagline: String(rawCampaign.short_tagline ?? "").trim(),
+    category: String(rawCampaign.category ?? "")
+    .trim()
+    .toLowerCase(), // 👈 penting
     hero_image_public_id: String(
       rawCampaign.hero_image_public_id ?? ""
     ).trim(),
@@ -154,5 +167,10 @@ export async function getCampaignBySlug(
 
   campaign.stories = campaignStories;
 
+    if (!preview) {
+    setCache(cacheKey, campaign);
+  }
+
   return campaign;
 }
+
