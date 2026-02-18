@@ -72,9 +72,11 @@ export default async function CampaignPage({
 
           {/* PROGRESS */}
           <CampaignProgress
-            collected_amount={campaign.collected_amount}
+            slug={campaign.slug}
+            initialCollected={campaign.collected_amount}
             goal_amount={campaign.goal_amount}
           />
+
 
         </div>
 

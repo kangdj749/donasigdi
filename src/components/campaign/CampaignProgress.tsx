@@ -3,36 +3,51 @@
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
-  collected_amount?: number | string | null;
-  goal_amount?: number | string | null;
+  slug: string;
+  initialCollected?: number;
+  goal_amount?: number;
 };
 
 export default function CampaignProgress({
-  collected_amount,
-  goal_amount,
+  slug,
+  initialCollected = 0,
+  goal_amount = 0,
 }: Props) {
-  /* ================= NORMALIZE DATA ================= */
+  const [collected, setCollected] = useState(initialCollected);
 
-  const collected = Number(collected_amount ?? 0);
-  const goal = Number(goal_amount ?? 0);
-
-  const [displayPercent, setDisplayPercent] = useState(0);
-
-  /* ================= HITUNG PERCENT ================= */
-
-  const percent = useMemo(() => {
-    if (goal <= 0) return 0;
-    return Math.min(
-      100,
-      Math.round((collected / goal) * 100)
-    );
-  }, [collected, goal]);
-
-  /* ================= UPDATE ANIMATION ================= */
+  /* ================= FETCH REALTIME ================= */
 
   useEffect(() => {
-    setDisplayPercent(percent);
-  }, [percent]);
+    const fetchLatest = async () => {
+      try {
+        const res = await fetch(`/api/campaign/${slug}`, {
+          cache: "no-store",
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        setCollected(Number(data.collected_amount));
+      } catch (err) {
+        console.error("Progress fetch error", err);
+      }
+    };
+
+    const interval = setInterval(fetchLatest, 5000);
+    fetchLatest();
+
+    return () => clearInterval(interval);
+  }, [slug]);
+
+  /* ================= CALCULATE ================= */
+
+  const percent = useMemo(() => {
+    if (goal_amount <= 0) return 0;
+    return Math.min(
+      100,
+      Math.round((collected / goal_amount) * 100)
+    );
+  }, [collected, goal_amount]);
 
   /* ================= UI ================= */
 
@@ -43,19 +58,19 @@ export default function CampaignProgress({
           Rp {collected.toLocaleString("id-ID")}
         </span>
         <span className="text-gray-500">
-          dari Rp {goal.toLocaleString("id-ID")}
+          dari Rp {goal_amount.toLocaleString("id-ID")}
         </span>
       </div>
 
       <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
           className="h-2 bg-green-500 rounded-full transition-all duration-700 ease-out"
-          style={{ width: `${displayPercent}%` }}
+          style={{ width: `${percent}%` }}
         />
       </div>
 
       <p className="text-xs text-gray-500">
-        {displayPercent}% tercapai
+        {percent}% tercapai
       </p>
     </div>
   );
