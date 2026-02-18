@@ -72,8 +72,8 @@ export default async function CampaignPage({
 
           {/* PROGRESS */}
           <CampaignProgress
-            collected={collected}
-            goal={goal}
+            collected_amount={collected}
+            goal_amount={goal}
           />
 
         </div>
