@@ -42,12 +42,14 @@ export default function CampaignProgress({
   /* ================= CALCULATE ================= */
 
   const percent = useMemo(() => {
-    if (goal_amount <= 0) return 0;
-    return Math.min(
-      100,
-      Math.round((collected / goal_amount) * 100)
-    );
-  }, [collected, goal_amount]);
+  if (goal_amount <= 0) return 0;
+
+  const raw = (collected / goal_amount) * 100;
+
+  if (raw > 0 && raw < 1) return 1;
+
+  return Math.min(100, Math.round(raw));
+}, [collected, goal_amount]);
 
   /* ================= UI ================= */
 
