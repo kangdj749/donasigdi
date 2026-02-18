@@ -3,27 +3,32 @@
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
-  collected_amount: number;
-  goal_amount: number;
+  collected_amount?: number | string | null;
+  goal_amount?: number | string | null;
 };
 
 export default function CampaignProgress({
   collected_amount,
   goal_amount,
 }: Props) {
+  /* ================= NORMALIZE DATA ================= */
+
+  const collected = Number(collected_amount ?? 0);
+  const goal = Number(goal_amount ?? 0);
+
   const [displayPercent, setDisplayPercent] = useState(0);
 
   /* ================= HITUNG PERCENT ================= */
 
   const percent = useMemo(() => {
-    if (goal_amount <= 0) return 0;
+    if (goal <= 0) return 0;
     return Math.min(
       100,
-      Math.round((collected_amount / goal_amount) * 100)
+      Math.round((collected / goal) * 100)
     );
-  }, [collected_amount, goal_amount]);
+  }, [collected, goal]);
 
-  /* ================= SMOOTH UPDATE ================= */
+  /* ================= UPDATE ANIMATION ================= */
 
   useEffect(() => {
     setDisplayPercent(percent);
@@ -35,10 +40,10 @@ export default function CampaignProgress({
     <div className="space-y-2">
       <div className="flex justify-between text-sm">
         <span className="font-semibold text-green-600">
-          Rp {collected_amount.toLocaleString("id-ID")}
+          Rp {collected.toLocaleString("id-ID")}
         </span>
         <span className="text-gray-500">
-          dari Rp {goal_amount.toLocaleString("id-ID")}
+          dari Rp {goal.toLocaleString("id-ID")}
         </span>
       </div>
 

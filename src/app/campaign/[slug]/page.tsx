@@ -23,8 +23,8 @@ export default async function CampaignPage({
 
   if (!campaign) return notFound();
 
-  const collected = Number(campaign.collected_amount) || 0;
-  const goal = Number(campaign.goal_amount) || 0;
+  //const collected = Number(campaign.collected_amount) || 0;
+  //const goal = Number(campaign.goal_amount) || 0;
 
   // ===============================
   // AFFILIATE SYSTEM (SCALABLE)
@@ -72,8 +72,8 @@ export default async function CampaignPage({
 
           {/* PROGRESS */}
           <CampaignProgress
-            collected_amount={collected}
-            goal_amount={goal}
+            collected_amount={campaign.collected_amount}
+            goal_amount={campaign.goal_amount}
           />
 
         </div>
