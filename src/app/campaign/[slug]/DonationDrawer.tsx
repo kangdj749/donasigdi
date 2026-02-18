@@ -24,22 +24,27 @@ export default function DonationDrawer({
     is_anonymous: false,
   });
 
+  /* ================= LOAD SNAP ================= */
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     if (window.snap) {
-      setSnapReady(true);
-      return;
-    }
+        setSnapReady(true);
+        return;
+        }
+
 
     const script = document.createElement("script");
 
     script.src =
-      process.env.MIDTRANS_IS_PRODUCTION === "true"
+      process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === "true"
         ? "https://app.midtrans.com/snap/snap.js"
         : "https://app.sandbox.midtrans.com/snap/snap.js";
 
     script.setAttribute(
       "data-client-key",
-      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY!
+      process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
     );
 
     script.async = true;
@@ -51,8 +56,10 @@ export default function DonationDrawer({
     document.body.appendChild(script);
   }, []);
 
+  /* ================= HANDLE DONATE ================= */
+
   const handleDonate = async () => {
-    if (!window.snap || !snapReady) return;
+    if (!snapReady) return;
 
     setLoading(true);
 
@@ -67,32 +74,62 @@ export default function DonationDrawer({
         }),
       });
 
-      const data = await res.json();
+      const data: { token?: string } = await res.json();
 
       if (!data.token) {
         setLoading(false);
         return;
       }
 
-      window.snap.pay(data.token, {
-        onSuccess: () => window.location.reload(),
-        onPending: () => window.location.reload(),
-        onError: () => alert("Pembayaran gagal"),
-      });
-    } catch (err) {
-      console.error(err);
-    }
+      window.snap?.pay(data.token, {
+        onSuccess: (result: unknown) => {
+          const snapResult = result as { order_id?: string };
 
-    setLoading(false);
+          if (snapResult.order_id) {
+            window.location.href = `/donasi/sukses?id=${snapResult.order_id}`;
+          } else {
+            window.location.href = "/donasi/gagal";
+          }
+        },
+
+        onPending: (result: unknown) => {
+          const snapResult = result as { order_id?: string };
+
+          if (snapResult.order_id) {
+            window.location.href = `/donasi/sukses?id=${snapResult.order_id}`;
+          } else {
+            window.location.href = "/donasi/gagal";
+          }
+        },
+
+        onError: () => {
+          window.location.href = "/donasi/gagal";
+        },
+
+        onClose: () => {
+          setLoading(false);
+        },
+      });
+    } catch (error) {
+      console.error("Donation error:", error);
+      setLoading(false);
+    }
   };
+
+  /* ================= UI ================= */
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-end z-50">
-      <div className="bg-white w-full max-w-md mx-auto rounded-t-3xl p-6 space-y-4">
+      <div className="bg-white w-full max-w-md mx-auto rounded-t-3xl p-6 space-y-4 shadow-xl">
+
+        <h2 className="text-lg font-semibold text-gray-800">
+          Form Donasi
+        </h2>
+
         <input
           type="text"
           placeholder="Nama"
-          className="w-full border rounded-xl p-3"
+          className="w-full border border-gray-200 rounded-xl p-3"
           value={form.donor_name}
           onChange={(e) =>
             setForm({ ...form, donor_name: e.target.value })
@@ -102,7 +139,7 @@ export default function DonationDrawer({
         <input
           type="text"
           placeholder="No WA / Email"
-          className="w-full border rounded-xl p-3"
+          className="w-full border border-gray-200 rounded-xl p-3"
           value={form.donor_contact}
           onChange={(e) =>
             setForm({ ...form, donor_contact: e.target.value })
@@ -111,7 +148,7 @@ export default function DonationDrawer({
 
         <input
           type="number"
-          className="w-full border rounded-xl p-3"
+          className="w-full border border-gray-200 rounded-xl p-3"
           value={form.amount}
           onChange={(e) =>
             setForm({ ...form, amount: Number(e.target.value) })
@@ -120,14 +157,14 @@ export default function DonationDrawer({
 
         <textarea
           placeholder="Tulis doa (opsional)"
-          className="w-full border rounded-xl p-3"
+          className="w-full border border-gray-200 rounded-xl p-3"
           value={form.message}
           onChange={(e) =>
             setForm({ ...form, message: e.target.value })
           }
         />
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-gray-600">
           <input
             type="checkbox"
             checked={form.is_anonymous}
@@ -141,7 +178,7 @@ export default function DonationDrawer({
         <button
           onClick={handleDonate}
           disabled={!snapReady || loading}
-          className="w-full bg-green-600 text-white py-3 rounded-2xl font-semibold"
+          className="w-full bg-green-600 text-white py-3 rounded-2xl font-semibold disabled:opacity-50"
         >
           {loading ? "Memproses..." : "Lanjut Pembayaran"}
         </button>

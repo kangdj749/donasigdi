@@ -2,6 +2,7 @@ import { google } from "googleapis";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const DONATION_SHEET_NAME = "donations";
+const CAMPAIGN_SHEET_NAME = "campaigns";
 
 if (!SHEET_ID) {
   throw new Error("GOOGLE_SHEET_ID not defined");
@@ -156,4 +157,85 @@ export async function updatePaymentStatus(
       },
     });
   }
+}
+
+export interface DonationRow {
+  id: string;
+  campaign_id: string;
+  amount: number;
+  payment_status: string;
+  ref?: string;
+}
+
+export async function getDonationById(
+  donationId: string
+): Promise<DonationRow | null> {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${DONATION_SHEET_NAME}!A:L`,
+  });
+
+  const rows = response.data.values;
+  if (!rows) return null;
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0]?.toString().trim() === donationId.trim()) {
+      return {
+        id: rows[i][0],
+        campaign_id: rows[i][1],
+        amount: Number(rows[i][4]),
+        payment_status: rows[i][5],
+        ref: rows[i][11],
+      };
+    }
+  }
+
+  return null;
+}
+async function findCampaignRowById(
+  campaignId: string
+): Promise<number | null> {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${CAMPAIGN_SHEET_NAME}!A:A`,
+  });
+
+  const rows = response.data.values;
+  if (!rows) return null;
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0]?.toString().trim() === campaignId.trim()) {
+      return i + 1;
+    }
+  }
+
+  return null;
+}
+
+export async function incrementCampaignCollectedAmount(
+  campaignId: string,
+  amount: number
+) {
+  const row = await findCampaignRowById(campaignId);
+  if (!row) {
+    console.error("CAMPAIGN NOT FOUND:", campaignId);
+    return;
+  }
+
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `${CAMPAIGN_SHEET_NAME}!I${row}`, // I = collected_amount
+  });
+
+  const current = Number(response.data.values?.[0]?.[0] ?? 0);
+  const updated = current + amount;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SHEET_ID,
+    range: `${CAMPAIGN_SHEET_NAME}!I${row}`,
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: [[updated]],
+    },
+  });
 }
