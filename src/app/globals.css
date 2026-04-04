@@ -1,60 +1,315 @@
 @import "tailwindcss";
 
 /* ======================================================
-   DESIGN TOKENS — COMMERCE SAFE (FINAL)
+   🎯 ENTERPRISE DESIGN TOKENS (SaaS READY)
 ====================================================== */
+
 :root {
-  /* ================= SURFACE ================= */
-  --background: 255 255 255;
-  --foreground: 17 24 39;
+  /* ================= COLORS ================= */
 
-  --card: 255 255 255;
-  --border: 226 232 240;
-  --muted: 241 245 249;
+  --color-primary: 34 197 94; /* green trust */
+  --color-secondary: 99 102 241;
 
-  /* ================= BRAND ================= */
-  --primary: 236 72 153;
-  --primary-foreground: 255 255 255;
-  --primary-soft: 252 231 243;
+  --color-bg: 255 255 255;
+  --color-surface: 248 250 252;
+  --color-elevated: 241 245 249;
+  --color-soft: 248 250 252;
 
-  /* ================= TYPO ================= */
-  --font-heading: "Poppins";
-  --font-body: "Inter";
+  --color-text: 15 23 42;
+  --color-muted: 100 116 139;
+  --color-subtle: 148 163 184;
 
-  /* 🚨 PAKSA LIGHT MODE */
-  color-scheme: light;
+  --color-border: 226 232 240;
+  --color-border-strong: 203 213 225;
+
+  --color-white: 255 255 255;
+  --color-black: 0 0 0;
+
+  /* ================= TYPOGRAPHY ================= */
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system;
+
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-base: 14.8px;
+  --text-md: 15.5px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
+
+  --leading-tight: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.72;
+  --leading-loose: 1.8;
+
+  /* ================= LAYOUT ================= */
+
+  --container-max: 720px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  /* ================= SHADOW ================= */
+
+  --shadow-soft: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-medium: 0 8px 24px rgba(0,0,0,0.06);
+  --shadow-elevated: 0 16px 40px rgba(0,0,0,0.08);
 }
 
 /* ======================================================
-   TAILWIND v4 THEME BRIDGE (TETAP)
+   🌙 DARK MODE
 ====================================================== */
-@theme {
-  --color-background: rgb(var(--background));
-  --color-foreground: rgb(var(--foreground));
 
-  --color-card: rgb(var(--card));
-  --color-border: rgb(var(--border));
-  --color-muted: rgb(var(--muted));
+[data-theme="dark"] {
+  --color-bg: 10 10 12;
+  --color-surface: 18 18 20;
+  --color-elevated: 28 28 32;
+  --color-soft: 20 20 24;
 
-  --color-primary: rgb(var(--primary));
-  --color-primary-foreground: rgb(var(--primary-foreground));
-  --color-primary-soft: rgb(var(--primary-soft));
+  --color-text: 240 240 245;
+  --color-muted: 160 160 170;
+  --color-subtle: 110 110 120;
+
+  --color-border: 40 40 45;
+  --color-border-strong: 60 60 65;
 }
 
 /* ======================================================
-   BASE RESET
+   🎨 BRAND OVERRIDE (WHITE LABEL READY)
 ====================================================== */
-html,
-body {
-  height: 100%;
+
+[data-theme="brand-red"] {
+  --color-primary: 220 38 38;
 }
 
-body {
-  background-color: rgb(var(--background));
-  color: rgb(var(--foreground));
-  font-family: var(--font-body), system-ui, sans-serif;
+[data-theme="brand-blue"] {
+  --color-primary: 37 99 235;
 }
+
+/* ======================================================
+   🧠 BASE (ChatGPT-like readability)
+====================================================== */
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+
+  background: rgb(var(--color-bg));
+  color: rgb(var(--color-text));
+
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  letter-spacing: -0.01em;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ======================================================
+   📐 LAYOUT
+====================================================== */
+
+.container-main {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+.section {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.section-tight {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* ======================================================
+   🔤 TYPOGRAPHY SYSTEM (🔥 CORE)
+====================================================== */
+
+.h1 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+}
+
+.h2 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+
+.h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: var(--leading-normal);
+}
+
+.body-lg {
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+}
+
+.body {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.caption {
+  font-size: var(--text-sm);
+  color: rgb(var(--color-muted));
+  line-height: var(--leading-normal);
+}
+
+.caption-subtle {
+  font-size: var(--text-xs);
+  color: rgb(var(--color-subtle));
+}
+
+/* ======================================================
+   🔘 BUTTON SYSTEM
+====================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: rgb(var(--color-primary));
+  color: rgb(var(--color-white));
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+  opacity: 0.95;
+}
+
+.btn-outline {
+  border: 1px solid rgb(var(--color-border));
+  color: rgb(var(--color-text));
+}
+
+.btn-outline:hover {
+  background: rgb(var(--color-soft));
+}
+
+/* ======================================================
+   🧱 CARD SYSTEM
+====================================================== */
+
+.card {
+  border: 1px solid rgb(var(--color-border));
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  background: rgb(var(--color-surface));
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgb(var(--color-border-strong));
+  box-shadow: var(--shadow-medium);
+}
+
+/* ======================================================
+   📊 PROGRESS BAR
+====================================================== */
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgb(var(--color-soft));
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: rgb(var(--color-primary));
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+/* ======================================================
+   🎨 HELPERS
+====================================================== */
+
+.text-primary {
+  color: rgb(var(--color-primary));
+}
+
+.text-muted {
+  color: rgb(var(--color-muted));
+}
+
+.bg-soft {
+  background: rgb(var(--color-soft));
+}
+
+/* ======================================================
+   ✨ ANIMATION (SUBTLE, PREMIUM)
+====================================================== */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease;
+}
+
+/* ======================================================
+   🧩 UTILITIES
+====================================================== */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+::selection {
+  background: rgb(var(--color-primary) / 0.15);
 }

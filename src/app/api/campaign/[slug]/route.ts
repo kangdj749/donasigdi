@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { fetchSheet, RANGE } from "@/lib/google-sheet";
 import { cloudinaryImage } from "@/lib/cloudinary";
 
+/* =========================
+   TYPES
+========================= */
+
 type Campaign = {
   id: string;
   slug: string;
@@ -24,19 +28,96 @@ type CampaignStory = {
   image_public_id: string;
 };
 
+/* =========================
+   GLOBAL CACHE 🔥
+========================= */
+
+type CacheData = {
+  campaigns: Campaign[];
+  stories: CampaignStory[];
+};
+
+type CacheEntry = {
+  data: CacheData;
+  expiry: number;
+};
+
+const CACHE_TTL = 60 * 1000; // 60 detik (aman banget buat quota)
+
+let globalCache: CacheEntry | null = null;
+
+/* =========================
+   HELPERS
+========================= */
+
+function toNumber(val: string | number | undefined): number {
+  const n = Number(String(val ?? "").replace(/[^\d]/g, ""));
+  return Number.isNaN(n) ? 0 : n;
+}
+
+/* =========================
+   FETCH WITH CACHE
+========================= */
+
+async function getCachedSheets(): Promise<CacheData> {
+  const now = Date.now();
+
+  // ✅ cache hit
+  if (globalCache && now < globalCache.expiry) {
+    return globalCache.data;
+  }
+
+  try {
+    // ✅ single fetch (parallel)
+    const [campaigns, stories] = await Promise.all([
+      fetchSheet<Campaign>(RANGE.CAMPAIGNS),
+      fetchSheet<CampaignStory>(RANGE.CAMPAIGN_STORY),
+    ]);
+
+    const data: CacheData = {
+      campaigns: Array.isArray(campaigns) ? campaigns : [],
+      stories: Array.isArray(stories) ? stories : [],
+    };
+
+    // ✅ save cache
+    globalCache = {
+      data,
+      expiry: now + CACHE_TTL,
+    };
+
+    return data;
+  } catch (err) {
+    console.error("🔥 SHEETS FETCH ERROR:", err);
+
+    // ✅ fallback pakai cache lama kalau ada
+    if (globalCache) {
+      return globalCache.data;
+    }
+
+    return {
+      campaigns: [],
+      stories: [],
+    };
+  }
+}
+
+/* =========================
+   GET
+========================= */
+
 export async function GET(
   req: Request,
   { params }: { params: { slug: string } }
 ) {
   try {
-    const campaigns = await fetchSheet<Campaign>(RANGE.CAMPAIGNS);
-    const stories = await fetchSheet<CampaignStory>(RANGE.CAMPAIGN_STORY);
+    const { campaigns, stories } = await getCachedSheets();
 
+    /* ================= FIND CAMPAIGN ================= */
 
     const campaign = campaigns.find(
       (c) =>
-        c.slug === params.slug &&
-        c.status === "active"
+        String(c.slug) === params.slug &&
+        String(c.status).toLowerCase() === "active"
     );
 
     if (!campaign) {
@@ -46,12 +127,14 @@ export async function GET(
       );
     }
 
+    /* ================= STORIES ================= */
+
     const campaignStories = stories
-      .filter((s) => s.campaign_id === campaign.id)
+      .filter((s) => String(s.campaign_id) === campaign.id)
       .sort(
         (a, b) =>
-          Number(a.section_order) -
-          Number(b.section_order)
+          Number(a.section_order || 0) -
+          Number(b.section_order || 0)
       )
       .map((section) => ({
         ...section,
@@ -60,13 +143,17 @@ export async function GET(
           : null,
       }));
 
-    const goal = Number(campaign.goal_amount || 0);
-    const collected = Number(campaign.collected_amount || 0);
+    /* ================= NUMBERS ================= */
+
+    const goal = toNumber(campaign.goal_amount);
+    const collected = toNumber(campaign.collected_amount);
 
     const percentage =
       goal > 0
         ? Math.min(Math.round((collected / goal) * 100), 100)
         : 0;
+
+    /* ================= RESULT ================= */
 
     const result = {
       ...campaign,
@@ -75,7 +162,8 @@ export async function GET(
       percentage,
       hero_image_url: cloudinaryImage(
         campaign.hero_image_public_id,
-        800),
+        800
+      ),
       stories: campaignStories,
     };
 

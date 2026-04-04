@@ -1,20 +1,21 @@
 import { NextResponse } from "next/server";
-import midtransClient from "midtrans-client";
-import { appendDonation, updateSnapToken } from "@/lib/google-sheet-service";
+import { snap } from "@/lib/midtrans";
+import {
+  appendDonation,
+  getCampaignByIdOrSlug,
+} from "@/lib/google-sheet-service";
 
-const snap = new midtransClient.Snap({
-  isProduction: false,
-  serverKey: process.env.MIDTRANS_SERVER_KEY!,
-});
+/* ================= TYPES ================= */
 
 interface Body {
   campaign_id: string;
-  donor_name: string;
-  donor_contact: string;
+  donor_name?: string;
+  donor_contact?: string;
   amount: number;
   message?: string;
   is_anonymous?: boolean;
-  ref?: string | null;
+  ref_code?: string | null;
+  payment_method?: string;
 }
 
 interface SnapPayload {
@@ -29,87 +30,142 @@ interface SnapPayload {
   };
 }
 
+/* ================= HELPERS ================= */
+
+function isEmail(val: string): boolean {
+  return val.includes("@");
+}
+
+function sanitizeName(
+  name?: string,
+  anonymous?: boolean
+): string {
+  if (anonymous || !name?.trim()) return "Hamba Allah";
+  return name.trim();
+}
+
+/* ================= ROUTE ================= */
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as Body;
 
+    /* ================= VALIDATION ================= */
+
     if (!body.campaign_id) {
-      throw new Error("INVALID_CAMPAIGN");
+      throw new Error("CAMPAIGN_ID_REQUIRED");
     }
 
-    if (!body.amount || body.amount <= 0) {
+    if (!body.amount || body.amount < 1000) {
       throw new Error("INVALID_AMOUNT");
     }
 
-    // ✅ Generate donationId di backend
-    const donationId = `DON-${Date.now()}`;
+    /* ================= GET CAMPAIGN ================= */
 
-    /* =========================
-       1️⃣ SIMPAN KE SHEET
-    ========================== */
+    const campaign = await getCampaignByIdOrSlug(
+      body.campaign_id
+    );
+
+    if (!campaign) {
+      throw new Error("CAMPAIGN_NOT_FOUND");
+    }
+
+    const campaignId = String(campaign.id);
+    const organizationId =
+      String(campaign.organization_id ?? "");
+
+    /* ================= NORMALIZE ================= */
+
+    const donationId = `DON-${Date.now()}`;
+    const amount = Math.floor(body.amount);
+
+    const donorName = sanitizeName(
+      body.donor_name,
+      body.is_anonymous
+    );
+
+    const donorContact = body.donor_contact ?? "";
+
+    const now = new Date().toISOString();
+
+    /* ================= 1️⃣ INSERT (PENDING) ================= */
 
     await appendDonation({
       id: donationId,
-      campaign_id: body.campaign_id,
-      donor_name: body.donor_name,
-      donor_contact: body.donor_contact,
-      amount: Number(body.amount),
+      campaign_id: campaignId,
+      organization_id: organizationId,
+      affiliate_id: "",
+
+      ref_code: body.ref_code ?? "",
+
+      donor_name: donorName,
+      donor_contact: donorContact,
+
+      amount: amount,
+      commission_amount: 0,
+
+      payment_status: "pending",
+
+      midtrans_id: "",
+      snap_token: "",
+
       message: body.message ?? "",
       is_anonymous: body.is_anonymous ?? false,
-      ref: body.ref ?? "",
-      payment_status: "pending",
-      snap_token: "",
-      midtrans_id: "",
+
+      created_at: now,
+
+      ref: body.ref_code ?? "",
+
+      payment_method: body.payment_method ?? "midtrans",
+
+      fee: 0,
+      net_amount: amount,
     });
 
-    /* =========================
-       2️⃣ CREATE SNAP TOKEN
-    ========================== */
+    /* ================= 2️⃣ CREATE SNAP ================= */
 
     const payload: SnapPayload = {
       transaction_details: {
         order_id: donationId,
-        gross_amount: Number(body.amount),
+        gross_amount: amount,
       },
       customer_details: {
-        first_name: body.donor_name,
-        phone: body.donor_contact.includes("@")
+        first_name: donorName,
+        phone: isEmail(donorContact)
           ? undefined
-          : body.donor_contact,
-        email: body.donor_contact.includes("@")
-          ? body.donor_contact
+          : donorContact,
+        email: isEmail(donorContact)
+          ? donorContact
           : undefined,
       },
     };
 
-    const transaction = await (snap.createTransaction as unknown as (
-      p: SnapPayload
-    ) => Promise<{ token: string }>)(payload);
+    const transaction = await (
+      snap.createTransaction as unknown as (
+        p: SnapPayload
+      ) => Promise<{ token: string }>
+    )(payload);
 
     if (!transaction?.token) {
       throw new Error("FAILED_CREATE_TRANSACTION");
     }
 
-    /* =========================
-       3️⃣ UPDATE SNAP TOKEN
-    ========================== */
-
-    await updateSnapToken(donationId, transaction.token);
+    /* ================= RESPONSE ================= */
 
     return NextResponse.json({
+      success: true,
       token: transaction.token,
       donationId,
     });
 
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      console.error("CREATE DONATION ERROR:", err.message);
-    } else {
-      console.error("UNKNOWN CREATE DONATION ERROR");
-    }
+  } catch (err) {
+    console.error("🔥 CREATE DONATION ERROR:", err);
 
     return NextResponse.json(
-      { error: "Failed create donation" },
+      {
+        success: false,
+        error: "Failed to create donation",
+      },
       { status: 500 }
     );
   }

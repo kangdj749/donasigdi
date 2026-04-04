@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import midtransClient from "midtrans-client";
 import { updateSnapToken } from "@/lib/google-sheet-service";
+import { snap } from "@/lib/midtrans";
 
 /* ================= TYPES ================= */
 
@@ -14,10 +15,7 @@ interface TokenRequestBody {
 
 /* ================= MIDTRANS CONFIG ================= */
 
-const snap = new midtransClient.Snap({
-  isProduction: false, // ⚠️ ganti true saat LIVE
-  serverKey: process.env.MIDTRANS_SERVER_KEY!,
-});
+
 
 /* ================= HANDLER ================= */
 

@@ -6,6 +6,7 @@ const DAY = 1000 * 60 * 60 * 24;
 
 export type AffiliateData = {
   code: string;
+  source?: string;
   createdAt: number;
   expiresAt: number;
 };
@@ -39,20 +40,20 @@ export function getAffiliate(): AffiliateData | null {
 /**
  * FIRST TOUCH ONLY
  */
-export function setAffiliate(code: string) {
+export function setAffiliate(code: string, source?: string) {
   if (typeof window === "undefined") return;
 
   const clean = code.trim();
-
   if (!isValidCode(clean)) return;
 
   const existing = getAffiliate();
-  if (existing) return; // 🔒 tidak boleh override
+  if (existing) return;
 
   const now = Date.now();
 
   const data: AffiliateData = {
     code: clean,
+    source,
     createdAt: now,
     expiresAt: now + AFFILIATE_EXPIRY_DAYS * DAY,
   };

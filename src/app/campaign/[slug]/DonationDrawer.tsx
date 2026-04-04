@@ -1,12 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getAffiliate } from "@/lib/affiliate";
+
+/* ================= TYPES ================= */
 
 type Props = {
   campaignId: string;
   affiliateCode: string | null;
   onClose: () => void;
 };
+
+type DonationForm = {
+  donor_name: string;
+  donor_contact: string;
+  amount: number;
+  message: string;
+  is_anonymous: boolean;
+};
+
+/* ================= CONST ================= */
+
+const PRESET_AMOUNTS = [20000, 50000, 100000, 200000];
+const MIN_AMOUNT = 10000;
+
+/* ================= COMPONENT ================= */
 
 export default function DonationDrawer({
   campaignId,
@@ -16,7 +34,7 @@ export default function DonationDrawer({
   const [snapReady, setSnapReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<DonationForm>({
     donor_name: "",
     donor_contact: "",
     amount: 50000,
@@ -24,16 +42,24 @@ export default function DonationDrawer({
     is_anonymous: false,
   });
 
+  /* ================= AFFILIATE ================= */
+
+  const resolvedAffiliate = useMemo(() => {
+    if (affiliateCode) return affiliateCode;
+
+    const stored = getAffiliate();
+    return stored?.code ?? null;
+  }, [affiliateCode]);
+
   /* ================= LOAD SNAP ================= */
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    if (window.snap) {
-        setSnapReady(true);
-        return;
-        }
-
+    if ((window as any).snap) {
+      setSnapReady(true);
+      return;
+    }
 
     const script = document.createElement("script");
 
@@ -49,57 +75,82 @@ export default function DonationDrawer({
 
     script.async = true;
 
-    script.onload = () => {
-      setSnapReady(true);
-    };
+    script.onload = () => setSnapReady(true);
 
     document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
+
+  /* ================= VALIDATION ================= */
+
+  function isValid(): boolean {
+    return form.amount >= MIN_AMOUNT;
+  }
 
   /* ================= HANDLE DONATE ================= */
 
-  const handleDonate = async () => {
-    if (!snapReady) return;
+  async function handleDonate() {
+    if (!snapReady || !isValid()) return;
 
     setLoading(true);
 
     try {
+      const payload = {
+        campaign_id: campaignId,
+
+        // 🔥 IMPORTANT: mapping sesuai sheet
+        donor_name:
+          form.is_anonymous || !form.donor_name
+            ? "Hamba Allah"
+            : form.donor_name,
+
+        donor_contact: form.donor_contact || "",
+
+        amount: Math.max(form.amount, MIN_AMOUNT),
+
+        message: form.message || "",
+
+        is_anonymous: form.is_anonymous,
+
+        // 🔥 AFFILIATE FIX
+        ref_code: resolvedAffiliate ?? "",
+
+        // 🔥 OPTIONAL FIELD (biar tidak shift)
+        payment_method: "midtrans",
+      };
+
       const res = await fetch("/api/donations/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          campaign_id: campaignId,
-          ...form,
-          ref: affiliateCode,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       const data: { token?: string } = await res.json();
 
-      if (!data.token) {
-        setLoading(false);
-        return;
+      if (!data?.token) {
+        throw new Error("Snap token not found");
       }
 
-      window.snap?.pay(data.token, {
+      (window as any).snap.pay(data.token, {
         onSuccess: (result: unknown) => {
-          const snapResult = result as { order_id?: string };
+          const r = result as { order_id?: string };
 
-          if (snapResult.order_id) {
-            window.location.href = `/donasi/sukses?id=${snapResult.order_id}`;
-          } else {
-            window.location.href = "/donasi/gagal";
-          }
+          window.location.href = r?.order_id
+            ? `/donasi/sukses?id=${r.order_id}`
+            : "/donasi/gagal";
         },
 
         onPending: (result: unknown) => {
-          const snapResult = result as { order_id?: string };
+          const r = result as { order_id?: string };
 
-          if (snapResult.order_id) {
-            window.location.href = `/donasi/sukses?id=${snapResult.order_id}`;
-          } else {
-            window.location.href = "/donasi/gagal";
-          }
+          window.location.href = r?.order_id
+            ? `/donasi/sukses?id=${r.order_id}`
+            : "/donasi/gagal";
         },
 
         onError: () => {
@@ -110,85 +161,159 @@ export default function DonationDrawer({
           setLoading(false);
         },
       });
-    } catch (error) {
-      console.error("Donation error:", error);
+    } catch (err) {
+      console.error("🔥 Donation error:", err);
       setLoading(false);
     }
-  };
+  }
+
+  /* ================= FORMAT ================= */
+
+  function formatCurrency(val: number): string {
+    return `Rp ${val.toLocaleString("id-ID")}`;
+  }
 
   /* ================= UI ================= */
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-end z-50">
-      <div className="bg-white w-full max-w-md mx-auto rounded-t-3xl p-6 space-y-4 shadow-xl">
+    <div className="fixed inset-0 z-50 flex justify-center bg-black/40 backdrop-blur-sm">
 
-        <h2 className="text-lg font-semibold text-gray-800">
-          Form Donasi
-        </h2>
+      {/* OVERLAY */}
+      <div className="absolute inset-0" onClick={onClose} />
 
-        <input
-          type="text"
-          placeholder="Nama"
-          className="w-full border border-gray-200 rounded-xl p-3"
-          value={form.donor_name}
-          onChange={(e) =>
-            setForm({ ...form, donor_name: e.target.value })
-          }
-        />
+      {/* DRAWER */}
+      <div className="relative mt-auto w-full container-main animate-fadeUp">
 
-        <input
-          type="text"
-          placeholder="No WA / Email"
-          className="w-full border border-gray-200 rounded-xl p-3"
-          value={form.donor_contact}
-          onChange={(e) =>
-            setForm({ ...form, donor_contact: e.target.value })
-          }
-        />
+        <div className="rounded-t-[var(--radius-xl)] bg-[rgb(var(--color-bg))] p-5 shadow-[var(--shadow-elevated)] space-y-5">
 
-        <input
-          type="number"
-          className="w-full border border-gray-200 rounded-xl p-3"
-          value={form.amount}
-          onChange={(e) =>
-            setForm({ ...form, amount: Number(e.target.value) })
-          }
-        />
+          {/* HANDLE */}
+          <div className="mx-auto h-1.5 w-12 rounded-full bg-[rgb(var(--color-border))]" />
 
-        <textarea
-          placeholder="Tulis doa (opsional)"
-          className="w-full border border-gray-200 rounded-xl p-3"
-          value={form.message}
-          onChange={(e) =>
-            setForm({ ...form, message: e.target.value })
-          }
-        />
+          {/* HEADER */}
+          <div className="space-y-1">
+            <h2 className="h3">💚 Donasi Sekarang</h2>
+            <p className="caption text-[rgb(var(--color-muted))]">
+              Setiap donasi kamu berarti besar 🙏
+            </p>
+          </div>
 
-        <label className="flex items-center gap-2 text-sm text-gray-600">
+          {/* PRESET */}
+          <div className="grid grid-cols-2 gap-2">
+            {PRESET_AMOUNTS.map((amt) => (
+              <button
+                key={amt}
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    amount: amt,
+                  }))
+                }
+                className={`rounded-[var(--radius-md)] border px-3 py-2 text-sm transition ${
+                  form.amount === amt
+                    ? "border-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))/0.1] text-primary"
+                    : "border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-soft))]"
+                }`}
+              >
+                {formatCurrency(amt)}
+              </button>
+            ))}
+          </div>
+
+          {/* CUSTOM AMOUNT */}
           <input
-            type="checkbox"
-            checked={form.is_anonymous}
+            type="number"
+            min={MIN_AMOUNT}
+            value={form.amount}
             onChange={(e) =>
-              setForm({ ...form, is_anonymous: e.target.checked })
+              setForm((prev) => ({
+                ...prev,
+                amount: Number(e.target.value),
+              }))
             }
+            className="w-full rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] px-3 py-2 body focus:outline-none focus:border-[rgb(var(--color-primary))]"
           />
-          Sembunyikan nama saya
-        </label>
 
-        <button
-          onClick={handleDonate}
-          disabled={!snapReady || loading}
-          className="w-full bg-green-600 text-white py-3 rounded-2xl font-semibold disabled:opacity-50"
-        >
-          {loading ? "Memproses..." : "Lanjut Pembayaran"}
-        </button>
+          {/* NAME */}
+          <input
+            placeholder="Nama (opsional)"
+            value={form.donor_name}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                donor_name: e.target.value,
+              }))
+            }
+            className="w-full rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] px-3 py-2 body"
+          />
 
-        <button
-          onClick={onClose}
-          className="w-full text-sm text-gray-500"
-        >
-          Batal
-        </button>
+          {/* CONTACT */}
+          <input
+            placeholder="No HP / Email (opsional)"
+            value={form.donor_contact}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                donor_contact: e.target.value,
+              }))
+            }
+            className="w-full rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] px-3 py-2 body"
+          />
+
+          {/* MESSAGE */}
+          <textarea
+            placeholder="Tulis doa atau pesan 🤲"
+            value={form.message}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                message: e.target.value,
+              }))
+            }
+            className="w-full rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] px-3 py-2 body"
+          />
+
+          {/* ANONYMOUS */}
+          <label className="flex items-center gap-2 caption">
+            <input
+              type="checkbox"
+              checked={form.is_anonymous}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  is_anonymous: e.target.checked,
+                }))
+              }
+            />
+            Sembunyikan nama saya
+          </label>
+
+          {/* AFFILIATE */}
+          {resolvedAffiliate && (
+            <div className="px-3 py-2 rounded-full border border-[rgb(var(--color-border))] bg-[rgb(var(--color-soft))] text-center caption">
+              Kode Relawan:
+              <span className="text-primary font-medium ml-1">
+                #{resolvedAffiliate}
+              </span>
+            </div>
+          )}
+
+          {/* CTA */}
+          <button
+            onClick={handleDonate}
+            disabled={!snapReady || loading || !isValid()}
+            className="btn btn-primary w-full disabled:opacity-50"
+          >
+            {loading ? "Memproses..." : "Lanjut Pembayaran"}
+          </button>
+
+          <button
+            onClick={onClose}
+            className="w-full text-center caption text-[rgb(var(--color-muted))]"
+          >
+            Batal
+          </button>
+
+        </div>
       </div>
     </div>
   );

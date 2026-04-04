@@ -1,5 +1,3 @@
-// app/campaign/[slug]/DonationSection.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -19,13 +17,13 @@ export default function DonationSection({
   return (
     <>
       {/* Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-center backdrop-blur-md bg-white/80 border-t z-40">
-        <div className="w-full max-w-md p-3">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center border-t border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg))]/90 backdrop-blur">
+        <div className="container-main p-3">
           <button
             onClick={() => setOpen(true)}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-2xl font-semibold active:scale-95 transition-all duration-200 shadow-lg"
+            className="btn btn-primary w-full active:scale-[0.98]"
           >
-            Donasi Sekarang
+            💚 Donasi Sekarang
           </button>
         </div>
       </div>

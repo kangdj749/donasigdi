@@ -16,23 +16,19 @@ type MidtransResult = {
 };
 
 declare global {
-  interface Window {
-    snap: {
-      pay: (
-        token: string,
-        options?: {
-          onSuccess?: (result: MidtransResult) => void;
-          onPending?: (result: MidtransResult) => void;
-          onError?: (result: MidtransResult) => void;
-          onClose?: () => void;
-        }
-      ) => void;
-    };
+  interface MidtransSnap {
+    pay: (
+      token: string,
+      options?: {
+        onSuccess?: (result: MidtransResult) => void;
+        onPending?: (result: MidtransResult) => void;
+        onError?: (result: MidtransResult) => void;
+        onClose?: () => void;
+      }
+    ) => void;
   }
-}
 
-declare module "midtrans-client" {
-  interface MidtransClientOptions {
-    clientKey?: string;
+  interface Window {
+    snap?: MidtransSnap;
   }
 }

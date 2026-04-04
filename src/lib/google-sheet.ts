@@ -1,82 +1,292 @@
 import { getSheetsClient } from "./google-sheet-client";
 
-const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
+/* =========================
+   CONFIG
+========================= */
 
-const RANGE = {
-  CAMPAIGNS: "campaigns!A:K",
-  CAMPAIGN_STORY: "campaign_story!A:G",
-  DONATIONS: "donations!A:G",
-  PRAYERS: "prayers!A:F",
+const SHEET_ID = process.env.GOOGLE_SHEET_ID as string;
+
+export const RANGE = {
+  CAMPAIGNS: "campaigns!A:U",
+  CAMPAIGN_STORY: "campaign_story!A:H",
+  DONATIONS: "donations!A:S",
+  PRAYERS: "prayers!A:I",
+  UPDATES: "updates!A:E",
+  DISBURSEMENTS: "disbursements!A:G",
+  AMENS: "amens!A:D",
+  ORGANIZATIONS: "organizations!A:J",
+} as const;
+
+/* =========================
+   CACHE SYSTEM (🔥 CORE FIX)
+========================= */
+
+type CacheEntry<T> = {
+  data: T;
+  expiry: number;
 };
 
-/* ===============================
-   GENERIC FETCH (READ)
-================================ */
+const CACHE_TTL = 60 * 1000; // 1 menit
+const cache = new Map<string, CacheEntry<unknown>>();
+const inFlight = new Map<string, Promise<unknown>>();
 
-export async function fetchSheet<T extends Record<string, unknown>>(
-  range: string
-): Promise<T[]> {
-  const sheets = getSheetsClient();
+/* =========================
+   HELPERS
+========================= */
 
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range,
+function getCache<T>(key: string): T | null {
+  const entry = cache.get(key);
+  if (!entry) return null;
+
+  if (Date.now() > entry.expiry) {
+    cache.delete(key);
+    return null;
+  }
+
+  return entry.data as T;
+}
+
+function setCache<T>(key: string, data: T) {
+  cache.set(key, {
+    data,
+    expiry: Date.now() + CACHE_TTL,
   });
+}
 
-  const rows = res.data.values ?? [];
+function invalidateCache(key?: string) {
+  if (!key) {
+    cache.clear();
+    return;
+  }
+  cache.delete(key);
+}
 
-  if (rows.length === 0) return [];
+/* =========================
+   RETRY (ANTI 429)
+========================= */
 
-  const [headerRow, ...dataRows] = rows;
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  retries = 3
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (err: unknown) {
+    if (retries <= 0) throw err;
 
-  const headers = headerRow.map((h) => String(h));
+    const delay = (4 - retries) * 500; // exponential-ish
+    await new Promise((r) => setTimeout(r, delay));
 
-  return dataRows.map((row) => {
-    const obj: Record<string, unknown> = {};
+    return withRetry(fn, retries - 1);
+  }
+}
 
-    headers.forEach((key, i) => {
-      obj[key] = row[i] ?? "";
+/* =========================
+   FETCH SHEET (🔥 CORE)
+========================= */
+
+export async function fetchSheet<
+  T extends Record<string, unknown>
+>(range: string): Promise<T[]> {
+  
+  const cacheKey = `sheet:${SHEET_ID}:${range}`;
+
+  /* ===== CACHE HIT ===== */
+  const cached = getCache<T[]>(cacheKey);
+  if (cached) return cached;
+
+  /* ===== SINGLE FLIGHT ===== */
+  if (inFlight.has(cacheKey)) {
+    return inFlight.get(cacheKey) as Promise<T[]>;
+  }
+
+  const promise = (async () => {
+    const sheets = getSheetsClient();
+
+    const res = await withRetry(() =>
+      sheets.spreadsheets.values.get({
+        spreadsheetId: SHEET_ID,
+        range,
+      })
+    );
+
+    const rows = res.data.values ?? [];
+
+    if (!rows.length) {
+      setCache(cacheKey, []);
+      return [];
+    }
+
+    const [headerRow, ...dataRows] = rows;
+
+    const headers = headerRow.map((h) =>
+      String(h)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+    );
+
+    const result: T[] = dataRows.map((row) => {
+      const obj: Record<string, unknown> = {};
+
+      headers.forEach((key, i) => {
+        obj[key] = row?.[i] ?? "";
+      });
+
+      return obj as T;
     });
 
-    return obj as T;
-  });
+    setCache(cacheKey, result);
+
+    return result;
+  })();
+
+  inFlight.set(cacheKey, promise);
+
+  try {
+    return await promise;
+  } finally {
+    inFlight.delete(cacheKey);
+  }
 }
 
+/* =========================
+   APPEND ROW
+========================= */
 
-/* ===============================
-   DONATION WRITE
-================================ */
-
-export async function appendDonation(
-  row: (string | number)[]
-) {
+export async function appendSheetRow(
+  range: string,
+  values: (string | number)[]
+): Promise<void> {
   const sheets = getSheetsClient();
 
-  await sheets.spreadsheets.values.append({
-    spreadsheetId: SHEET_ID,
-    range: RANGE.DONATIONS,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [row],
-    },
-  });
+  await withRetry(() =>
+    sheets.spreadsheets.values.append({
+      spreadsheetId: SHEET_ID,
+      range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [values],
+      },
+    })
+  );
+
+  /* 🔥 INVALIDATE CACHE */
+  invalidateCache(`sheet:${range}`);
 }
+
+/* =========================
+   UPDATE ROW (BY campaign_id)
+========================= */
+
+export async function updateSheetRow(
+  range: string,
+  campaignId: string,
+  values: (string | number)[]
+): Promise<void> {
+  const sheets = getSheetsClient();
+
+  const data = await fetchSheet<
+    Record<string, string | number>
+  >(range);
+
+  const index = data.findIndex(
+    (row) => String(row["campaign_id"]) === campaignId
+  );
+
+  if (index === -1) return;
+
+  const rowNumber = index + 2;
+  const sheetName = range.split("!")[0];
+
+  await withRetry(() =>
+    sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${sheetName}!A${rowNumber}`,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [values],
+      },
+    })
+  );
+
+  invalidateCache(`sheet:${range}`);
+}
+
+/* =========================
+   DONATION WRITE
+========================= */
+
+type DonationInput = {
+  id: string;
+  campaign_id: string;
+  organization_id?: string;
+  affiliate_id?: string;
+  ref_code?: string;
+  donor_name: string;
+  donor_contact?: string;
+  amount: number;
+  commission_amount?: number;
+  payment_status: string;
+  midtrans_id?: string;
+  snap_token?: string;
+  message?: string;
+  is_anonymous?: boolean;
+  created_at: string;
+  ref?: string;
+  payment_method?: string;
+  fee?: number;
+  net_amount?: number;
+};
+
+export async function appendDonation(
+  input: DonationInput
+) {
+  const values = [
+    input.id,
+    input.campaign_id,
+    input.organization_id ?? "",
+    input.affiliate_id ?? "",
+    input.ref_code ?? "",
+    input.donor_name,
+    input.donor_contact ?? "",
+    input.amount,
+    input.commission_amount ?? "",
+    input.payment_status,
+    input.midtrans_id ?? "",
+    input.snap_token ?? "",
+    input.message ?? "",
+    input.is_anonymous ? "TRUE" : "FALSE",
+    input.created_at,
+    input.ref ?? "",
+    input.payment_method ?? "",
+    input.fee ?? "",
+    input.net_amount ?? "",
+  ];
+
+  await appendSheetRow(RANGE.DONATIONS, values);
+}
+/* =========================
+   FIND DONATION ROW (CACHED)
+========================= */
 
 async function findDonationRow(
   id: string
 ): Promise<number | null> {
-  const sheets = getSheetsClient();
+  const rows = await fetchSheet<Record<string, unknown>>(
+    "donations!A2:A"
+  );
 
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: "donations!A2:A",
-  });
-
-  const rows = res.data.values ?? [];
-  const idx = rows.findIndex((r) => r[0] === id);
+  const idx = rows.findIndex(
+    (r) => String(Object.values(r)[0]) === id
+  );
 
   return idx === -1 ? null : idx + 2;
 }
+
+/* =========================
+   UPDATE DONATION STATUS
+========================= */
 
 export async function updateDonationStatus(
   donationId: string,
@@ -86,67 +296,118 @@ export async function updateDonationStatus(
   }
 ) {
   const sheets = getSheetsClient();
-  const row = await findDonationRow(donationId);
-  if (!row) return;
+
+  const all = await fetchSheet<Record<string, string>>(
+    RANGE.DONATIONS
+  );
+
+  const index = all.findIndex(
+    (row) => String(row.id) === donationId
+  );
+
+  if (index === -1) return;
+
+  const rowNumber = index + 2;
+
+  const header = Object.keys(all[0]);
+
+  const paymentIndex = header.indexOf("payment_status");
+  const midtransIndex = header.indexOf("midtrans_id");
+
+  if (paymentIndex === -1 || midtransIndex === -1) {
+    console.error("❌ Column not found");
+    return;
+  }
+
+  const updates: Promise<unknown>[] = [];
 
   if (data.payment_status) {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SHEET_ID,
-      range: `donations!E${row}`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: { values: [[data.payment_status]] },
-    });
+    const col = String.fromCharCode(65 + paymentIndex);
+
+    updates.push(
+      withRetry(() =>
+        sheets.spreadsheets.values.update({
+          spreadsheetId: SHEET_ID,
+          range: `donations!${col}${rowNumber}`,
+          valueInputOption: "USER_ENTERED",
+          requestBody: {
+            values: [[data.payment_status]],
+          },
+        })
+      )
+    );
   }
 
   if (data.midtrans_id) {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SHEET_ID,
-      range: `donations!F${row}`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: { values: [[data.midtrans_id]] },
-    });
+    const col = String.fromCharCode(65 + midtransIndex);
+
+    updates.push(
+      withRetry(() =>
+        sheets.spreadsheets.values.update({
+          spreadsheetId: SHEET_ID,
+          range: `donations!${col}${rowNumber}`,
+          valueInputOption: "USER_ENTERED",
+          requestBody: {
+            values: [[data.midtrans_id]],
+          },
+        })
+      )
+    );
   }
+
+  await Promise.all(updates);
+
+  invalidateCache(`sheet:${RANGE.DONATIONS}`);
 }
+
+/* =========================
+   INCREMENT CAMPAIGN
+========================= */
 
 export async function incrementCampaignCollected(
   campaignId: string,
   amount: number
 ) {
-  const sheets = getSheetsClient();
+  const data = await fetchSheet<Record<string, unknown>>(
+    RANGE.CAMPAIGNS
+  );
 
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: RANGE.CAMPAIGNS,
-  });
+  if (!data.length) return;
 
-  const rows = res.data.values ?? [];
-  const [header, ...data] = rows;
+  const header = Object.keys(data[0]);
 
   const idIndex = header.indexOf("id");
   const collectedIndex = header.indexOf("collected_amount");
 
   const idx = data.findIndex(
-    (r) => r[idIndex] === campaignId
+    (r) => String(Object.values(r)[idIndex]) === campaignId
   );
 
   if (idx === -1) return;
 
-  const rowNumber = idx + 2;
   const current = Number(
-    data[idx][collectedIndex] || 0
+    Object.values(data[idx])[collectedIndex] || 0
   );
+
   const updated = current + amount;
+  const rowNumber = idx + 2;
 
-  await sheets.spreadsheets.values.update({
-    spreadsheetId: SHEET_ID,
-    range: `campaigns!${String.fromCharCode(
-      65 + collectedIndex
-    )}${rowNumber}`,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [[updated]],
-    },
-  });
+  const colLetter = String.fromCharCode(
+    65 + collectedIndex
+  );
+
+  const sheets = getSheetsClient();
+
+  await withRetry(() =>
+    sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `campaigns!${colLetter}${rowNumber}`,
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[updated]],
+      },
+    })
+  );
+
+  invalidateCache(`sheet:${RANGE.CAMPAIGNS}`);
 }
-
-export { RANGE };

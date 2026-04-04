@@ -13,59 +13,87 @@ import {
 import CardGridSection from "./CardGridSection";
 
 /* =========================
-   MAIN RENDERER
+   TYPES
 ========================= */
 
 type Props = {
   sections: CampaignStorySection[];
 };
 
-const COLLAPSE_HEIGHT = 700;
+/* =========================
+   CONFIG
+========================= */
 
-export default function CampaignStoryRenderer({ sections }: Props) {
-  const [expanded, setExpanded] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+const COLLAPSE_HEIGHT = 720;
+
+/* =========================
+   MAIN COMPONENT
+========================= */
+
+export default function CampaignStoryRenderer({
+  sections,
+}: Props) {
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [isOverflowing, setIsOverflowing] =
+    useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (containerRef.current) {
       setIsOverflowing(
-        containerRef.current.scrollHeight > COLLAPSE_HEIGHT
+        containerRef.current.scrollHeight >
+          COLLAPSE_HEIGHT
       );
     }
   }, [sections]);
 
   return (
-    <section className="px-4 mt-10 max-w-lg mx-auto">
+    <section className="container-main mt-6 animate-fadeUp">
+
+      {/* ================= CONTENT ================= */}
       <div
         ref={containerRef}
-        className="relative space-y-8 overflow-hidden transition-all duration-500"
+        className="relative space-y-6 overflow-hidden transition-all duration-500"
         style={{
-          maxHeight: expanded ? "none" : COLLAPSE_HEIGHT,
+          maxHeight: expanded
+            ? "none"
+            : `${COLLAPSE_HEIGHT}px`,
         }}
       >
         {sections.map((section) => (
-          <StorySection key={section.id} section={section} />
+          <StorySection
+            key={section.id}
+            section={section}
+          />
         ))}
 
         {!expanded && isOverflowing && (
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-linear-to-t from-white via-white/90 to-transparent pointer-events-none" />
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[rgb(var(--color-bg))] via-[rgb(var(--color-bg))/0.9] to-transparent" />
         )}
       </div>
 
+      {/* ================= TOGGLE ================= */}
       {isOverflowing && (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="mt-6 flex items-center justify-center gap-2 text-primary font-semibold text-sm mx-auto"
-        >
-          {expanded ? "Tutup Cerita" : "Baca Selengkapnya"}
-          <ChevronDown
-            size={18}
-            className={`transition-transform ${
-              expanded ? "rotate-180" : ""
-            }`}
-          />
-        </button>
+        <div className="flex justify-center">
+          <button
+            onClick={() =>
+              setExpanded((prev) => !prev)
+            }
+            className="mt-6 btn btn-outline flex items-center gap-2"
+          >
+            {expanded
+              ? "Tutup Cerita"
+              : "Baca Selengkapnya"}
+
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                expanded ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        </div>
       )}
     </section>
   );
@@ -83,35 +111,42 @@ function StorySection({
   const type = section.type?.trim();
 
   switch (type) {
+    /* ================= HEADING ================= */
     case "heading":
       return (
-        <h2 className="text-2xl font-bold flex items-center gap-3">
-          <span className="w-1.5 h-8 bg-primary rounded-full" />
+        <h2 className="h2 flex items-center gap-3">
+          <span className="w-1.5 h-6 rounded-full bg-[rgb(var(--color-primary))]" />
           {section.content}
         </h2>
       );
 
     case "subheading":
       return (
-        <h3 className="text-base font-semibold text-gray-800">
+        <h3 className="h3 text-[rgb(var(--color-text))]">
           {section.content}
         </h3>
       );
 
+    /* ================= TEXT ================= */
     case "text":
       return (
-        <p className="text-sm leading-relaxed text-gray-700">
+        <p className="body text-[rgb(var(--color-text))]">
           {section.content}
         </p>
       );
 
+    /* ================= IMAGE ================= */
     case "image":
       if (!section.image_id) return null;
+
       return (
-        <div className="rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--color-border))]">
           <Image
-            src={cloudinaryImage(section.image_id, 1000)}
-            alt="Campaign"
+            src={cloudinaryImage(
+              section.image_id,
+              1000
+            )}
+            alt="Campaign story image"
             width={1000}
             height={600}
             loading="lazy"
@@ -120,71 +155,97 @@ function StorySection({
         </div>
       );
 
+    /* ================= QUOTE ================= */
     case "quote":
       return (
-        <blockquote className="relative bg-gray-50 p-6 rounded-2xl border border-gray-100">
+        <blockquote className="relative p-5 rounded-[var(--radius-lg)] border border-[rgb(var(--color-border))] bg-[rgb(var(--color-soft))] space-y-2">
           <Quote
-            className="absolute -top-3 -left-3 text-primary bg-white rounded-full p-1 shadow-sm"
-            size={28}
+            size={20}
+            className="text-[rgb(var(--color-primary))]"
           />
-          <p className="italic text-gray-600 text-sm">
+
+          <p className="body italic text-[rgb(var(--color-muted))]">
             {section.content}
           </p>
         </blockquote>
       );
 
+    /* ================= LIST (FIXED BUG HERE) ================= */
     case "list":
       if (!section.content) return null;
+
       return (
-        <div className="grid gap-3">
-          {section.content.split("|").map((item, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 p-4 rounded-xl border border-gray-100 bg-white shadow-sm"
-            >
-              <CheckCircle2
-                size={18}
-                className="text-primary mt-1 shrink-0"
-              />
-              <p className="text-sm text-gray-700">
-                {item.trim()}
-              </p>
-            </div>
-          ))}
+        <div className="space-y-3">
+          {section.content
+            .split("|")
+            .map((item, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-3 p-4 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg))]"
+              >
+                <CheckCircle2
+                  size={16}
+                  className="mt-1 text-[rgb(var(--color-primary))]"
+                />
+
+                <p className="body text-[rgb(var(--color-text))]">
+                  {item.trim()}
+                </p>
+              </div>
+            ))}
         </div>
       );
 
+    /* ================= HIGHLIGHT ================= */
     case "highlight_box":
       return (
-        <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 text-sm text-gray-700">
-          {section.content}
+        <div className="p-5 rounded-[var(--radius-lg)] border border-[rgb(var(--color-primary))/0.25] bg-[rgb(var(--color-primary))/0.06]">
+          <p className="body text-[rgb(var(--color-text))]">
+            {section.content}
+          </p>
         </div>
       );
 
+    /* ================= DIVIDER ================= */
     case "divider":
-      return <div className="h-px bg-gray-200 my-6" />;
+      return (
+        <div className="h-px bg-[rgb(var(--color-border))]" />
+      );
 
+    /* ================= STATS ================= */
     case "stats":
       if (!section.content) return null;
       return <StatsSection content={section.content} />;
 
+    /* ================= CARD GRID ================= */
     case "card_grid":
       if (!section.content) return null;
-      return <CardGridSection content={section.content} />;
+      return (
+        <CardGridSection
+          content={section.content}
+        />
+      );
 
+    /* ================= CTA ================= */
     case "cta":
       return (
-        <div className="p-6 rounded-2xl bg-primary text-white text-center space-y-3">
-          <p className="text-sm font-medium">{section.content}</p>
-          <button className="bg-white text-primary px-5 py-2 rounded-full text-sm font-semibold">
+        <div className="p-6 rounded-[var(--radius-lg)] bg-[rgb(var(--color-primary))] text-[rgb(var(--color-white))] text-center space-y-3 shadow-[var(--shadow-soft)]">
+          <p className="body font-medium">
+            {section.content}
+          </p>
+
+          <button className="btn bg-[rgb(var(--color-white))] text-[rgb(var(--color-primary))]">
             Donasi Sekarang
           </button>
         </div>
       );
 
+    /* ================= VIDEO ================= */
     case "video":
       if (!section.video_url) return null;
-      return <LazyVideoEmbed url={section.video_url} />;
+      return (
+        <LazyVideoEmbed url={section.video_url} />
+      );
 
     default:
       return null;
@@ -193,26 +254,32 @@ function StorySection({
 
 /* =========================
    STATS SECTION
-   format: "5000 Paket|2000 Anak|50 Titik"
 ========================= */
 
-function StatsSection({ content }: { content: string }) {
+function StatsSection({
+  content,
+}: {
+  content: string;
+}) {
   return (
     <div className="grid grid-cols-3 gap-3 text-center">
       {content.split("|").map((item, i) => {
         const parts = item.trim().split(" ");
         const number = parts[0];
-        const label = parts.slice(1).join(" ");
+        const label = parts
+          .slice(1)
+          .join(" ");
 
         return (
           <div
             key={i}
-            className="p-4 bg-gray-50 rounded-xl border border-gray-100"
+            className="p-4 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] bg-[rgb(var(--color-soft))]"
           >
-            <p className="text-lg font-bold text-primary">
+            <p className="h3 text-primary">
               {number}
             </p>
-            <p className="text-xs text-gray-600">
+
+            <p className="caption">
               {label}
             </p>
           </div>
@@ -223,15 +290,28 @@ function StatsSection({ content }: { content: string }) {
 }
 
 /* =========================
-   LAZY VIDEO
+   VIDEO EMBED
 ========================= */
 
-function LazyVideoEmbed({ url }: { url: string }) {
-  const [loaded, setLoaded] = useState(false);
+function LazyVideoEmbed({
+  url,
+}: {
+  url: string;
+}) {
+  const [loaded, setLoaded] =
+    useState<boolean>(false);
 
-  const extractVideoId = (input: string) => {
-    if (!input.includes("/embed/")) return null;
-    return input.split("/embed/")[1]?.split("?")[0];
+  const extractVideoId = (
+    input: string
+  ): string | null => {
+    if (!input.includes("/embed/"))
+      return null;
+
+    return (
+      input
+        .split("/embed/")[1]
+        ?.split("?")[0] ?? null
+    );
   };
 
   const videoId = extractVideoId(url);
@@ -240,7 +320,7 @@ function LazyVideoEmbed({ url }: { url: string }) {
   const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (
-    <div className="relative aspect-video rounded-2xl overflow-hidden shadow-sm">
+    <div className="relative aspect-video overflow-hidden rounded-[var(--radius-lg)] border border-[rgb(var(--color-border))]">
       {!loaded ? (
         <button
           onClick={() => setLoaded(true)}
@@ -248,21 +328,22 @@ function LazyVideoEmbed({ url }: { url: string }) {
         >
           <Image
             src={thumbnail}
-            alt="Video Thumbnail"
+            alt="Video thumbnail"
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
             <PlayCircle
-              size={64}
-              className="text-white drop-shadow-lg"
+              size={56}
+              className="text-white"
             />
           </div>
         </button>
       ) : (
         <iframe
           src={url}
-          title="Campaign Video"
+          title="Campaign video"
           allow="autoplay; encrypted-media"
           allowFullScreen
           loading="lazy"
