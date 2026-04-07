@@ -1,5 +1,5 @@
 type Client = {
-  send: (data: string) => void;
+  send: (data: unknown) => void;
 };
 
 const clients = new Set<Client>();
@@ -13,11 +13,9 @@ export function removeClient(client: Client) {
 }
 
 export function broadcast(data: unknown) {
-  const payload = `data: ${JSON.stringify(data)}\n\n`;
-
   clients.forEach((client) => {
     try {
-      client.send(payload);
+      client.send(data);
     } catch {
       clients.delete(client);
     }

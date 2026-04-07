@@ -10,7 +10,7 @@ export const RANGE = {
   CAMPAIGNS: "campaigns!A:U",
   CAMPAIGN_STORY: "campaign_story!A:H",
   DONATIONS: "donations!A:S",
-  PRAYERS: "prayers!A:I",
+  PRAYERS: "prayers!A:M",
   UPDATES: "updates!A:E",
   DISBURSEMENTS: "disbursements!A:G",
   AMENS: "amens!A:D",

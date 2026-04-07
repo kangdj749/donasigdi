@@ -1,27 +1,21 @@
 import { NextResponse } from "next/server";
-import { incrementPrayerShare } from "@/lib/campaign.share.service";
+import { incrementShare } from "@/lib/prayer.engine";
 
 export async function POST(req: Request) {
   try {
     const { prayerId } = await req.json();
 
     if (!prayerId) {
-      return NextResponse.json(
-        { error: "Invalid" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid" }, { status: 400 });
     }
 
-    const total = incrementPrayerShare(prayerId);
+    const total = incrementShare(prayerId);
 
     return NextResponse.json({
       success: true,
       total,
     });
-  } catch (err) {
-    return NextResponse.json(
-      { error: "failed" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "failed" }, { status: 500 });
   }
 }

@@ -3,21 +3,17 @@ import { notFound } from "next/navigation";
 
 import { getCampaignBySlug } from "@/lib/campaign.service";
 import {
-  getRecentPrayers,
+  getViralPrayers,
   type Prayer,
 } from "@/lib/campaign.extras.service";
-import { getViralPrayers } from "@/lib/campaign.extras.service";
+
 import CampaignPrayersSection from "@/components/campaign/sections/CampaignPrayersSection";
 
-/* =========================
-   CONFIG
-========================= */
+/* ================= CONFIG ================= */
 
 export const revalidate = 60;
 
-/* =========================
-   SEO META (ENHANCED)
-========================= */
+/* ================= SEO META ================= */
 
 export async function generateMetadata({
   params,
@@ -28,27 +24,32 @@ export async function generateMetadata({
 
   if (!campaign) return {};
 
-  const title = `Doa untuk ${campaign.title} | Dukung & Aminkan`;
-  const description = `Kumpulan doa terbaik untuk ${campaign.title}. Aminkan doa, bagikan harapan, dan bantu mereka sekarang 🙏`;
+  const title = `Doa untuk ${campaign.title} | Aminkan & Bantu`;
+  const description = `Kumpulan doa terbaik untuk ${campaign.title}. Aminkan doa dan bantu sekarang 🙏`;
+
+  const url = `/campaign/${campaign.slug}/prayers`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/campaign/${campaign.slug}/prayers`,
+      canonical: url,
     },
     openGraph: {
       title,
       description,
+      url,
       type: "article",
-      url: `/campaign/${campaign.slug}/prayers`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
 
-/* =========================
-   PAGE
-========================= */
+/* ================= PAGE ================= */
 
 export default async function CampaignPrayersPage({
   params,
@@ -63,26 +64,36 @@ export default async function CampaignPrayersPage({
     campaign.id
   );
 
+  /* 🔥 JSON-LD */
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: `Doa untuk ${campaign.title}`,
+    description: `Kumpulan doa untuk ${campaign.title}`,
+  };
+
   return (
     <div className="min-h-screen bg-[rgb(var(--color-surface))] flex justify-center">
       <div className="w-full container-main bg-[rgb(var(--color-bg))] pb-32">
 
-        {/* ================= BACK NAV (🔥 NEW) ================= */}
-        <div className="sticky top-0 z-40 backdrop-blur bg-[rgb(var(--color-bg))]/90 border-b border-[rgb(var(--color-border))]">
+        {/* JSON LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
 
+        {/* NAV */}
+        <div className="sticky top-0 z-40 backdrop-blur bg-[rgb(var(--color-bg))]/90 border-b border-[rgb(var(--color-border))]">
           <div className="flex items-center gap-3 px-2 py-3">
 
             <Link
               href={`/campaign/${campaign.slug}`}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgb(var(--color-border))] hover:bg-[rgb(var(--color-soft))] transition"
+              className="btn btn-outline"
             >
-              <span className="text-[14px]">←</span>
-              <span className="caption font-medium">
-                Kembali
-              </span>
+              ← Kembali
             </Link>
-
-            <div className="h-4 w-px bg-[rgb(var(--color-border))]" />
 
             <p className="caption truncate">
               {campaign.title}
@@ -91,25 +102,31 @@ export default async function CampaignPrayersPage({
           </div>
         </div>
 
-        {/* ================= HEADER ================= */}
+        {/* HEADER */}
         <div className="section-tight space-y-3">
-
-          <h1 className="h2 leading-tight">
+          <h1 className="h2">
             Doa untuk {campaign.title}
           </h1>
 
-          <p className="caption max-w-lg">
-            Ribuan orang telah mendoakan. Setiap doa adalah harapan
-            yang menguatkan 💚 Kamu juga bisa ikut mengaminkan dan berbagi kebaikan.
+          <p className="caption">
+            Ribuan orang telah mendoakan. Kamu juga bisa ikut
+            mengaminkan 🙏
           </p>
-
         </div>
 
-        {/* ================= CONTENT ================= */}
+        {/* CONTENT */}
         <CampaignPrayersSection
           campaignId={campaign.id}
-          initialData={prayers}
-          showHeader={false}
+          organizationId={campaign.organization_id}
+          campaignSlug={campaign.slug}
+          organizationSlug={campaign.organization?.slug ?? "" }
+          initialData={prayers.map((p) => ({
+            ...p,
+            amen_count: Number(p.amen_count ?? 0),
+            share_count: Number(p.share_count ?? 0),
+            created_at: p.created_at ?? new Date().toISOString(),
+          }))}
+          
         />
 
       </div>

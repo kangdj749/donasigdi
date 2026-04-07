@@ -3,6 +3,8 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react";
 
+/* ================= TYPES ================= */
+
 type PaymentStatus =
   | "checking"
   | "pending"
@@ -24,6 +26,18 @@ interface CampaignData {
   target_amount: number;
 }
 
+/* ================= HELPERS ================= */
+
+function safeNumber(val: unknown): number {
+  const n = Number(val);
+  return isNaN(n) ? 0 : n;
+}
+
+function formatCurrency(val: unknown): string {
+  return `Rp ${safeNumber(val).toLocaleString("id-ID")}`;
+}
+
+/* ================= COMPONENT ================= */
 
 export default function SuccessClient() {
   const searchParams = useSearchParams();
@@ -31,61 +45,66 @@ export default function SuccessClient() {
   const donationId = searchParams.get("id");
 
   const [status, setStatus] = useState<PaymentStatus>("checking");
-
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
+  const [payment, setPayment] = useState<PaymentData | null>(null);
+
   const [redirectCountdown, setRedirectCountdown] = useState(5);
+  const [timeLeft, setTimeLeft] = useState("");
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [payment, setPayment] = useState<PaymentData | null>(null);
-  const [timeLeft, setTimeLeft] = useState<string>("");
 
-
-  /* ================= FETCH STATUS ================= */
+  /* ================= FETCH ================= */
 
   const fetchStatus = useCallback(async () => {
-      if (!donationId) return;
+    if (!donationId) return;
 
-      try {
-        const res = await fetch(`/api/donations/status/${donationId}`, {
-          cache: "no-store",
-        });
+    try {
+      const res = await fetch(`/api/donations/status/${donationId}`, {
+        cache: "no-store",
+      });
 
-        if (!res.ok) {
-          setStatus("error");
-          return;
-        }
-
-        const data = await res.json();
-
-        setPayment({
-          amount: data.amount,
-          va_number: data.va_number,
-          bank: data.bank,
-          expiry_time: data.expiry_time,
-        });
-
-        setCampaign(data.campaign);
-
-        if (data.payment_status === "paid") {
-          setStatus("paid");
-          stopPolling();
-        } else if (data.payment_status === "failed") {
-          setStatus("failed");
-          stopPolling();
-        } else if (data.payment_status === "expired") {
-          setStatus("expired");
-          stopPolling();
-        } else {
-          setStatus("pending");
-        }
-      } catch (err) {
-        console.error("Payment status error:", err);
+      if (!res.ok) {
         setStatus("error");
-        stopPolling();
+        return;
       }
 
-    }, [donationId]);
+      const data = await res.json();
 
+      setPayment({
+        amount: safeNumber(data.amount),
+        va_number: data.va_number,
+        bank: data.bank,
+        expiry_time: data.expiry_time,
+      });
+
+      setCampaign({
+        title: data.campaign?.title ?? "",
+        collected_amount: safeNumber(data.campaign?.collected_amount),
+        target_amount: safeNumber(data.campaign?.target_amount),
+      });
+
+      switch (data.payment_status) {
+        case "paid":
+          setStatus("paid");
+          stopPolling();
+          break;
+        case "failed":
+          setStatus("failed");
+          stopPolling();
+          break;
+        case "expired":
+          setStatus("expired");
+          stopPolling();
+          break;
+        default:
+          setStatus("pending");
+      }
+    } catch (err) {
+      console.error("Payment status error:", err);
+      setStatus("error");
+      stopPolling();
+    }
+  }, [donationId]);
 
   /* ================= POLLING ================= */
 
@@ -104,13 +123,9 @@ export default function SuccessClient() {
 
     fetchStatus();
 
-    intervalRef.current = setInterval(() => {
-      fetchStatus();
-    }, 3000);
+    intervalRef.current = setInterval(fetchStatus, 3000);
 
-    const timeout = setTimeout(() => {
-      stopPolling();
-    }, 120000);
+    const timeout = setTimeout(stopPolling, 120000);
 
     return () => {
       stopPolling();
@@ -118,7 +133,7 @@ export default function SuccessClient() {
     };
   }, [donationId, fetchStatus]);
 
-  /* ================= AUTO REDIRECT ================= */
+  /* ================= REDIRECT ================= */
 
   useEffect(() => {
     if (status !== "paid") return;
@@ -136,7 +151,32 @@ export default function SuccessClient() {
     return () => clearInterval(timer);
   }, [status, router]);
 
-  /* ================= CALCULATE PERCENT ================= */
+  /* ================= COUNTDOWN ================= */
+
+  useEffect(() => {
+    if (!payment?.expiry_time) return;
+
+    const interval = setInterval(() => {
+      const diff =
+        new Date(payment.expiry_time!).getTime() - Date.now();
+
+      if (diff <= 0) {
+        setStatus("expired");
+        clearInterval(interval);
+        return;
+      }
+
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+
+      setTimeLeft(`${h}j ${m}m ${s}d`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [payment]);
+
+  /* ================= CALC ================= */
 
   const percent =
     campaign && campaign.target_amount > 0
@@ -148,211 +188,134 @@ export default function SuccessClient() {
         )
       : 0;
 
-      
-    const copyVA = async () => {
-      if (!payment?.va_number) return;
-      await navigator.clipboard.writeText(payment.va_number);
-      alert("Nomor VA berhasil disalin");
-    };
-
-
-    useEffect(() => {
-    if (!payment?.expiry_time) return;
-
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const expiry = new Date(payment.expiry_time!).getTime();
-      const diff = expiry - now;
-
-      if (diff <= 0) {
-        setStatus("expired");
-        clearInterval(interval);
-        return;
-      }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor(
-        (diff % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const seconds = Math.floor(
-        (diff % (1000 * 60)) / 1000
-      );
-
-      setTimeLeft(
-        `${hours}j ${minutes}m ${seconds}d`
-      );
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [payment]);
-
   /* ================= UI ================= */
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-[rgb(var(--color-surface))] px-4">
 
-        {status === "pending" && payment && (
-        <>
-          <div className="mx-auto mb-6 h-14 w-14 rounded-full bg-yellow-100 flex items-center justify-center">
-            <span className="text-yellow-600 text-2xl">🏦</span>
-          </div>
+      <div className="w-full max-w-md card text-center animate-fadeUp">
 
-          <h1 className="text-xl font-semibold mb-2">
-            Selesaikan Pembayaran
-          </h1>
-
-          <p className="text-sm text-gray-500 mb-6">
-            Transfer ke Virtual Account berikut sebelum waktu habis.
-          </p>
-
-          <div className="bg-gray-50 p-4 rounded-xl text-left mb-4 space-y-3">
-
-            <div>
-              <p className="text-xs text-gray-400">Bank</p>
-              <p className="font-semibold uppercase">
-                {payment.bank}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-400">Nomor Virtual Account</p>
-              <div className="flex justify-between items-center">
-                <p className="font-mono font-semibold">
-                  {payment.va_number}
-                </p>
-                <button
-                  onClick={copyVA}
-                  className="text-xs bg-black text-white px-3 py-1 rounded-lg"
-                >
-                  Salin
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-400">Total Pembayaran</p>
-              <p className="font-semibold text-lg">
-                Rp {payment.amount.toLocaleString("id-ID")}
-              </p>
-            </div>
-
-            {timeLeft && (
-              <div>
-                <p className="text-xs text-gray-400">Berlaku Hingga</p>
-                <p className="font-semibold text-red-500">
-                  {timeLeft}
-                </p>
-              </div>
-            )}
-
-          </div>
-
-          <button
-            onClick={fetchStatus}
-            className="w-full bg-black text-white py-3 rounded-xl text-sm font-medium hover:opacity-90"
-          >
-            Saya Sudah Bayar
-          </button>
-        </>
-      )}
-
-
-
+        {/* CHECKING */}
         {status === "checking" && (
           <>
-            <div className="animate-spin mx-auto mb-6 h-10 w-10 border-4 border-gray-200 border-t-black rounded-full" />
-            <h1 className="text-xl font-semibold mb-2">
-              Memverifikasi Pembayaran...
-            </h1>
-            <p className="text-sm text-gray-500">
-              Mohon tunggu sebentar.
-            </p>
+            <div className="animate-spin mx-auto mb-6 h-10 w-10 border-4 border-[rgb(var(--color-border))] border-t-[rgb(var(--color-text))] rounded-full" />
+            <h1 className="h3">Memverifikasi Pembayaran...</h1>
+            <p className="caption">Mohon tunggu sebentar</p>
           </>
         )}
 
-        {status === "paid" && campaign && (
+        {/* PENDING */}
+        {status === "pending" && payment && (
           <>
-            <div className="mx-auto mb-6 h-14 w-14 rounded-full bg-green-100 flex items-center justify-center">
-              <span className="text-green-600 text-2xl">✓</span>
+            <h1 className="h3 mb-2">Selesaikan Pembayaran</h1>
+
+            <div className="card text-left space-y-3 mt-4">
+
+              <div>
+                <p className="caption-subtle">Bank</p>
+                <p className="body font-semibold uppercase">
+                  {payment.bank}
+                </p>
+              </div>
+
+              <div>
+                <p className="caption-subtle">Virtual Account</p>
+                <p className="body font-mono">
+                  {payment.va_number}
+                </p>
+              </div>
+
+              <div>
+                <p className="caption-subtle">Total</p>
+                <p className="h3">
+                  {formatCurrency(payment.amount)}
+                </p>
+              </div>
+
+              {timeLeft && (
+                <p className="caption text-red-500">
+                  {timeLeft}
+                </p>
+              )}
             </div>
 
-            <h1 className="text-xl font-semibold mb-2">
-              Donasi Berhasil 🎉
-            </h1>
+            <button
+              onClick={fetchStatus}
+              className="btn btn-primary w-full mt-4"
+            >
+              Saya Sudah Bayar
+            </button>
+          </>
+        )}
 
-            <p className="text-sm text-gray-500 mb-4">
-              Terima kasih atas donasi sebesar
+        {/* PAID */}
+        {status === "paid" && campaign && (
+          <>
+            <h1 className="h3 mb-2">Donasi Berhasil 🎉</h1>
+
+            <p className="caption mb-4">
+              Terima kasih atas donasi
               <br />
-              <span className="font-semibold text-black">
-                Rp {payment?.amount.toLocaleString("id-ID")}
+              <span className="text-primary font-semibold">
+                {formatCurrency(payment?.amount)}
               </span>
             </p>
 
-            <div className="mb-6 text-left">
-              <p className="text-sm font-medium mb-1">
+            <div className="text-left mb-6">
+              <p className="body font-medium mb-2">
                 {campaign.title}
               </p>
 
-              <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+              <div className="progress-bar mb-2">
                 <div
-                  className="bg-black h-2 rounded-full transition-all duration-500"
+                  className="progress-fill"
                   style={{ width: `${percent}%` }}
                 />
               </div>
 
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between caption">
                 <span>{percent}%</span>
                 <span>
-                  Rp {campaign.collected_amount.toLocaleString("id-ID")}
+                  {formatCurrency(campaign.collected_amount)}
                 </span>
               </div>
             </div>
 
-            <p className="text-xs text-gray-400 mb-4">
-              Mengalihkan ke beranda dalam {redirectCountdown} detik...
+            <p className="caption mb-4">
+              Kembali dalam {redirectCountdown} detik...
             </p>
 
             <button
               onClick={() => router.push("/")}
-              className="w-full bg-black text-white py-3 rounded-xl text-sm font-medium hover:opacity-90 transition"
+              className="btn btn-primary w-full"
             >
               Kembali Sekarang
             </button>
           </>
         )}
 
+        {/* ERROR STATES */}
         {status === "failed" && (
-          <>
-            <h1 className="text-xl font-semibold mb-2">
-              Pembayaran Gagal
-            </h1>
-            <button
-              onClick={() => router.back()}
-              className="w-full bg-black text-white py-3 rounded-xl text-sm font-medium"
-            >
-              Coba Lagi
-            </button>
-          </>
+          <button
+            onClick={() => router.back()}
+            className="btn btn-primary w-full"
+          >
+            Coba Lagi
+          </button>
         )}
 
         {status === "expired" && (
-          <>
-            <h1 className="text-xl font-semibold mb-2">
-              Pembayaran Kedaluwarsa
-            </h1>
-            <button
-              onClick={() => router.push("/")}
-              className="w-full bg-black text-white py-3 rounded-xl text-sm font-medium"
-            >
-              Donasi Ulang
-            </button>
-          </>
+          <button
+            onClick={() => router.push("/")}
+            className="btn btn-primary w-full"
+          >
+            Donasi Ulang
+          </button>
         )}
 
         {status === "error" && (
-          <p className="text-sm text-gray-500">
-            Terjadi kesalahan saat memverifikasi pembayaran.
+          <p className="caption">
+            Terjadi kesalahan saat verifikasi
           </p>
         )}
       </div>

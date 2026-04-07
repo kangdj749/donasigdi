@@ -133,12 +133,9 @@ export default async function CampaignPage({
 
             <div className="flex justify-between">
               <span className="caption">
-                {trustStats.totalDonors} donatur
+                💚 {trustStats.totalDonors} donatur
               </span>
 
-              <span className="body font-semibold text-primary">
-                Rp {formatCurrency(trustStats.totalAmount)}
-              </span>
             </div>
 
             <CampaignProgress

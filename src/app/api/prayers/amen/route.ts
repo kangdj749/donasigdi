@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { incrementLocalAmen } from "@/lib/campaign.amen.service";
+import { incrementAmen } from "@/lib/prayer.engine";
 
 export async function POST(req: Request) {
   try {
@@ -9,18 +9,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid" }, { status: 400 });
     }
 
-    const total = incrementLocalAmen(prayerId);
+    const total = incrementAmen(prayerId);
 
     return NextResponse.json({
       success: true,
       total,
     });
-  } catch (err) {
-    console.error("AMEN ERROR:", err);
-
-    return NextResponse.json(
-      { error: "failed" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "failed" }, { status: 500 });
   }
 }
