@@ -7,7 +7,7 @@ import {
   getRecentDonors,
   getRecentPrayers,
   getCampaignTrustStats,
-  type Prayer,
+  
 } from "@/lib/campaign.extras.service";
 
 import { getCampaignUpdates } from "@/lib/campaign.updates.service";

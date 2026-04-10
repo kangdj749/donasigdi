@@ -2,12 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import AffiliateLink from "@/components/system/AffiliateLink";
+import { ReactNode } from "react";
 
 /* ================= TYPES ================= */
 
+
 type Props = {
   slug: string;
-  prayersCount?: number;
+  prayersCount: number;
+  donors?: ReactNode;
+  updates?: ReactNode;
 };
 
 /* ================= CONFIG ================= */
