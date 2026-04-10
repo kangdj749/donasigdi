@@ -54,7 +54,7 @@ export async function GET(
       10 = created_at
     */
 
-    const campaignSlug = donation[1];
+    const campaignId = donation[1];
 
     /* ================= GET CAMPAIGN ================= */
 
@@ -69,14 +69,14 @@ export async function GET(
 
     if (campaignRows) {
       const campaign = campaignRows.find(
-        (row) => row[0]?.toString().trim() === campaignSlug
+        (row) => row[0]?.toString().trim() === campaignId
       );
 
       if (campaign) {
         campaignData = {
-          title: campaign[1],
-          collected_amount: Number(campaign[4] || 0),
-          target_amount: Number(campaign[5] || 0),
+          title: campaign[3],
+          collected_amount: Number(campaign[9] || 0),
+          target_amount: Number(campaign[8] || 0),
         };
       }
     }

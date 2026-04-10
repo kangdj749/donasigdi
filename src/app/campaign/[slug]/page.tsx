@@ -90,9 +90,17 @@ export default async function CampaignPage({
   try {
     const cookieStore = cookies();
 
+    const cookieRef =
+      cookieStore.get("affiliate_ref")?.value ?? null;
+
+    /* 🔥 PRIORITY:
+      1. URL (ref)
+      2. COOKIE (persisted first-touch)
+      3. null
+    */
     affiliateCode =
-      searchParams?.ref ??
-      cookieStore.get("campaign_ref")?.value ??
+      searchParams?.ref?.trim() ||
+      cookieRef ||
       null;
   } catch {
     affiliateCode = searchParams?.ref ?? null;
@@ -301,6 +309,10 @@ export default async function CampaignPage({
         {/* CTA */}
         <DonationSection
           campaignId={campaign.id}
+          organizationId={campaign.organization_id}
+          campaignSlug={campaign.slug}
+          organizationSlug={campaign.organization?.slug || ""}
+          category={campaign.category || ""}
           affiliateCode={affiliateCode}
         />
 

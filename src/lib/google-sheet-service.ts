@@ -1,4 +1,5 @@
 import { google } from "googleapis";
+import { fetchSheet } from "@/lib/google-sheet";
 
 /* =========================================================
    CONFIG
@@ -84,6 +85,10 @@ export interface AppendDonationPayload {
   payment_method?: string;
   fee?: number;
   net_amount?: number;
+  organization_slug?: string;
+  campaign_slug?: string;
+  src?: string;
+
 }
 
 /* =========================================================
@@ -120,11 +125,15 @@ export async function appendDonation(
     data.payment_method ?? "",
     data.fee ?? "",
     data.net_amount ?? "",
+    data.organization_slug ?? "",
+    data.campaign_slug ?? "",
+    data.src ?? "",
+    
   ];
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: `${DONATION_SHEET}!A:S`,
+    range: `${DONATION_SHEET}!A:V`,
     valueInputOption: "USER_ENTERED",
     requestBody: { values: [values] },
   });
@@ -264,65 +273,96 @@ export async function incrementCampaignStats(
   campaignId: string,
   amount: number
 ) {
-  const row = await findCampaignRow(campaignId);
-  if (!row) return;
-
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
-    range: `${CAMPAIGN_SHEET}!I${row}:J${row}`,
+    range: "campaigns!A:U",
   });
 
-  const currentAmount = Number(res.data.values?.[0]?.[0] ?? 0);
-  const currentDonor = Number(res.data.values?.[0]?.[1] ?? 0);
+  const rows = res.data.values ?? [];
+  if (rows.length < 2) return;
 
-  const updatedAmount = currentAmount + amount;
-  const updatedDonor = currentDonor + 1;
+  const headers = rows[0].map((h) =>
+    String(h).toLowerCase().trim()
+  );
 
-  await sheets.spreadsheets.values.update({
-    spreadsheetId: SHEET_ID,
-    range: `${CAMPAIGN_SHEET}!I${row}:J${row}`,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [[updatedAmount, updatedDonor]],
-    },
-  });
+  const idIndex = headers.indexOf("id");
+  const amountIndex = headers.indexOf("collected_amount");
+  const donorIndex = headers.indexOf("donor_count");
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][idIndex] == campaignId) {
+      const currentAmount = Number(rows[i][amountIndex] || 0);
+      const currentDonor = Number(rows[i][donorIndex] || 0);
+
+      const updatedAmount = currentAmount + amount;
+      const updatedDonor = currentDonor + 1;
+
+      const rowNumber = i + 2; // 🔥 FIX DISINI
+
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SHEET_ID,
+        range: `campaigns!${String.fromCharCode(
+          65 + amountIndex
+        )}${rowNumber}:${String.fromCharCode(
+          65 + donorIndex
+        )}${rowNumber}`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: {
+          values: [[updatedAmount, updatedDonor]],
+        },
+      });
+
+      return;
+    }
+  }
 }
 
 export interface DonationRow {
   id: string;
   campaign_id: string;
+  organization_id: string;
   donor_name: string;
   amount: number;
   payment_status: string;
   message: string;
   is_anonymous: string | boolean;
+  ref: string;
+  payment_method: string;
+  organization_slug: string;
+  campaign_slug: string;
+  src: string;
 }
+
 
 export async function getDonationById(
   donationId: string
 ): Promise<DonationRow | null> {
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId: SHEET_ID,
-    range: "donations!A:S",
-  });
+  const rows = await fetchSheet<Record<string, string>>(
+    "donations!A:V"
+  );
 
-  const rows = res.data.values ?? [];
+  const found = rows.find((r) => r.id === donationId);
 
-  for (let i = 1; i < rows.length; i++) {
-    if (rows[i][0] === donationId) {
-      return {
-        id: rows[i][0],
-        campaign_id: rows[i][1],
-        donor_name: rows[i][5],
-        amount: Number(rows[i][7]),
-        payment_status: rows[i][9],
-        message: rows[i][12],
-        is_anonymous: rows[i][13],
-      };
-    }
-  }
+  if (!found) return null;
 
-  return null;
+  return {
+    id: found.id,
+    campaign_id: found.campaign_id,
+    organization_id: found.organization_id,
+
+    donor_name: found.donor_name,
+    amount: Number(found.amount || 0),
+    payment_status: found.payment_status,
+    message: found.message,
+    is_anonymous: found.is_anonymous,
+
+    ref: found.ref,
+    payment_method: found.payment_method,
+
+    organization_slug: found.organization_slug,
+    campaign_slug: found.campaign_slug,
+    src: found.src,
+  };
 }
 
 export async function getCampaignByIdOrSlug(
@@ -345,6 +385,80 @@ export async function getCampaignByIdOrSlug(
         id,
         organization_id: orgId,
       };
+    }
+  }
+
+  return null;
+}
+
+export async function getAffiliateByRefCode(refCode: string) {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: "affiliates!A:I",
+  });
+
+  const rows = res.data.values ?? [];
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][5] === refCode) {
+      return {
+        id: rows[i][0],
+        organization_id: rows[i][1],
+        name: rows[i][2],
+      };
+    }
+  }
+
+  return null;
+}
+
+export async function getDonationRaw(
+  donationId: string
+) {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: "donations!A:W",
+  });
+
+  const rows = res.data.values ?? [];
+  if (rows.length < 2) return null;
+
+  const headers = rows[0].map((h) =>
+    String(h).toLowerCase().trim()
+  );
+
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0] === donationId) {
+      const row = rows[i];
+
+      const get = (key: string, fallbackIndex: number) => {
+        const idx = headers.indexOf(key);
+        if (idx !== -1 && row[idx]) return row[idx];
+        return row[fallbackIndex] ?? "";
+      };
+
+      return {
+        id: get("id", 0),
+        campaign_id: get("campaign_id", 1),
+        organization_id: get("organization_id", 2),
+
+        donor_name: get("donor_name", 5),
+        donor_contact: get("donor_contact", 6),
+        amount: Number(get("amount", 7)),
+        payment_status: get("payment_status", 9),
+
+        message: get("message", 12),
+        is_anonymous: get("is_anonymous", 13),
+
+        ref: get("ref", 15),
+        payment_method: get("payment_method", 16),
+
+        organization_slug: get("organization_slug", 19),
+        campaign_slug: get("campaign_slug", 20),
+        src: get("src", 21),
+        prayer_created: get("prayer_created", 21),
+      };
+
     }
   }
 

@@ -24,21 +24,16 @@ export default function PrayerShareButtons({
 }: Props) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
-  /* ================= BUILD URL (CLIENT ONLY) ================= */
+  /* ================= BUILD URL (UPDATED AFFILIATE) ================= */
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const affiliate = getAffiliate();
 
-    const ref =
-      affiliate?.code ||
-      localStorage.getItem("ref") ||
-      "";
-
-    const src =
-      localStorage.getItem("src") ||
-      `doa_${prayerId}`;
+    /* 🔥 FINAL SOURCE OF TRUTH */
+    const ref = affiliate?.code || "";
+    const src = affiliate?.source || `doa_${prayerId}`;
 
     const url = `${window.location.origin}/doa-orang-baik/${organizationSlug}/${campaignSlug}/${prayerId}?ref=${ref}&src=${src}`;
 
@@ -77,7 +72,7 @@ ${shareUrl}`;
     }
   };
 
-  /* ================= UI ================= */
+  /* ================= UI (UNCHANGED) ================= */
 
   return (
     <div className="card space-y-4 animate-fadeUp">

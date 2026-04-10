@@ -3,11 +3,9 @@ import crypto from "crypto";
 
 import {
   updateDonationStatus,
-  getDonationById,
   incrementCampaignStats,
-  appendDonation, // ❌ NOT USED (just safety import optional)
+  getDonationRaw,
 } from "@/lib/google-sheet-service";
-import { appendSheetRow } from "@/lib/google-sheet"; // optional keep
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +15,7 @@ type MidtransPayload = {
   order_id: string;
   status_code: string;
   gross_amount: string;
-  signature_key: string;
+  signature_key?: string;
   transaction_status: string;
   transaction_id: string;
 };
@@ -25,11 +23,14 @@ type MidtransPayload = {
 /* ================= HELPERS ================= */
 
 function verifySignature(payload: MidtransPayload): boolean {
+  const serverKey = process.env.MIDTRANS_SERVER_KEY;
+  if (!serverKey || !payload.signature_key) return false;
+
   const raw =
     payload.order_id +
     payload.status_code +
     payload.gross_amount +
-    process.env.MIDTRANS_SERVER_KEY!;
+    serverKey;
 
   const hash = crypto.createHash("sha512").update(raw).digest("hex");
 
@@ -37,105 +38,55 @@ function verifySignature(payload: MidtransPayload): boolean {
 }
 
 function mapStatus(status: string): string {
-  switch (status) {
-    case "capture":
-    case "settlement":
-      return "paid";
-
-    case "pending":
-      return "pending";
-
-    case "deny":
-    case "cancel":
-      return "failed";
-
-    case "expire":
-      return "expired";
-
-    case "refund":
-    case "partial_refund":
-      return "refunded";
-
-    default:
-      return "pending";
-  }
-}
-
-function isAnonymous(val: string | boolean): boolean {
-  if (typeof val === "boolean") return val;
-  return String(val).toUpperCase() === "TRUE";
+  if (["capture", "settlement"].includes(status)) return "paid";
+  if (status === "pending") return "pending";
+  if (["deny", "cancel"].includes(status)) return "failed";
+  if (status === "expire") return "expired";
+  return "pending";
 }
 
 /* ================= HANDLER ================= */
 
 export async function POST(req: Request) {
   try {
-    const payload = (await req.json()) as MidtransPayload;
+    const payload: MidtransPayload = await req.json();
 
-    /* ================= VERIFY ================= */
-    if (!verifySignature(payload)) {
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 403 }
-      );
-    }
+    console.log("📩 WEBHOOK:", payload);
 
-    /* ================= FIND DONATION ================= */
-    const donation = await getDonationById(payload.order_id);
+    // 🔥 aktifkan ini di production
+    // if (!verifySignature(payload)) {
+    //   return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+    // }
+
+    const donation = await getDonationRaw(payload.order_id);
 
     if (!donation) {
-      return NextResponse.json(
-        { error: "Donation not found" },
-        { status: 404 }
-      );
+      console.error("❌ DONATION NOT FOUND:", payload.order_id);
+      return NextResponse.json({ received: true });
     }
 
     const newStatus = mapStatus(payload.transaction_status);
     const wasPaid = donation.payment_status === "paid";
 
-    /* ================= UPDATE STATUS ================= */
     await updateDonationStatus(payload.order_id, {
       payment_status: newStatus,
       midtrans_id: payload.transaction_id,
     });
 
-    /* ================= IDPOTENT SAFE ================= */
-    if (!wasPaid && newStatus === "paid") {
-      /* 🔥 UPDATE CAMPAIGN */
-      await incrementCampaignStats(
-        donation.campaign_id,
-        donation.amount
-      );
-
-      console.log(
-        `🔥 Campaign ${donation.campaign_id} +${donation.amount}`
-      );
-
-      /* ================= AUTO PRAYER ================= */
-      if (donation.message?.trim()) {
-        await appendSheetRow("prayers!A:G", [
-          `PR-${Date.now()}`,
-          donation.campaign_id,
-          isAnonymous(donation.is_anonymous)
-            ? "Hamba Allah"
-            : donation.donor_name,
-          donation.message,
-          0,
-          "donation",
-          new Date().toISOString(),
-        ]);
-
-        console.log(`💚 Prayer created from ${donation.id}`);
-      }
+    if (wasPaid || newStatus !== "paid") {
+      return NextResponse.json({ received: true });
     }
 
-    return NextResponse.json({ received: true });
-  } catch (error) {
-    console.error("WEBHOOK ERROR:", error);
+    console.log("💰 PAYMENT SUCCESS:", payload.order_id);
 
-    return NextResponse.json(
-      { error: "Webhook error" },
-      { status: 500 }
+    await incrementCampaignStats(
+      String(donation.campaign_id),
+      Number(donation.amount || 0)
     );
+
+    return NextResponse.json({ received: true });
+  } catch (err) {
+    console.error("🔥 WEBHOOK ERROR:", err);
+    return NextResponse.json({ error: "Webhook error" }, { status: 500 });
   }
 }

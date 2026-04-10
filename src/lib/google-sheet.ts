@@ -9,7 +9,7 @@ const SHEET_ID = process.env.GOOGLE_SHEET_ID as string;
 export const RANGE = {
   CAMPAIGNS: "campaigns!A:U",
   CAMPAIGN_STORY: "campaign_story!A:H",
-  DONATIONS: "donations!A:S",
+  DONATIONS: "donations!A:W",
   PRAYERS: "prayers!A:M",
   UPDATES: "updates!A:E",
   DISBURSEMENTS: "disbursements!A:G",
@@ -121,6 +121,7 @@ export async function fetchSheet<
 
     const headers = headerRow.map((h) =>
       String(h)
+        .replace(/\u00A0/g, "") // 🔥 remove NBSP
         .trim()
         .toLowerCase()
         .replace(/\s+/g, "_")
@@ -160,18 +161,34 @@ export async function appendSheetRow(
 ): Promise<void> {
   const sheets = getSheetsClient();
 
+  /* ================= NORMALIZE ================= */
+  const normalized = values.map((v) =>
+    v === null || v === undefined || v === "" ? " " : v
+  );
+
+  /* ================= GET LAST ROW ================= */
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range,
+  });
+
+  const currentRows = res.data.values?.length || 0;
+  const nextRow = currentRows + 1;
+
+  const sheetName = range.split("!")[0];
+
+  /* ================= WRITE EXACT ROW ================= */
   await withRetry(() =>
-    sheets.spreadsheets.values.append({
+    sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range,
-      valueInputOption: "USER_ENTERED",
+      range: `${sheetName}!A${nextRow}:M${nextRow}`, // 🔥 FIX UTAMA
+      valueInputOption: "RAW",
       requestBody: {
-        values: [values],
+        values: [normalized],
       },
     })
   );
 
-  /* 🔥 INVALIDATE CACHE */
   invalidateCache(`sheet:${range}`);
 }
 
@@ -410,4 +427,24 @@ export async function incrementCampaignCollected(
   );
 
   invalidateCache(`sheet:${RANGE.CAMPAIGNS}`);
+}
+
+export async function appendPrayerRow(values: string[]) {
+  const sheets = getSheetsClient();
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID!,
+    range: "prayers!A:A",
+  });
+
+  const nextRow = (res.data.values?.length || 1) + 1;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: process.env.GOOGLE_SHEET_ID!,
+    range: `prayers!A${nextRow}`,
+    valueInputOption: "RAW",
+    requestBody: {
+      values: [values],
+    },
+  });
 }

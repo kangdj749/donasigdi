@@ -1,8 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 import { getCampaignBySlug } from "@/lib/campaign.service";
 import { getRecentDonors } from "@/lib/campaign.extras.service";
+
+import {
+  getAffiliateServer,
+  withAffiliate,
+} from "@/lib/affiliate.server";
+
+/* ================= CONFIG ================= */
 
 export const revalidate = 60;
 
@@ -14,7 +22,7 @@ export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}) {
+}): Promise<Metadata> {
   const campaign = await getCampaignBySlug(params.slug);
 
   if (!campaign) return {};
@@ -22,24 +30,27 @@ export async function generateMetadata({
   const title = `Donatur ${campaign.title} | Transparansi Donasi`;
   const description = `Daftar donatur untuk ${campaign.title}. Transparansi dan dukungan nyata dari orang-orang baik 🙏`;
 
+  const url = `/campaign/${campaign.slug}/donors`;
+
   return {
     title,
     description,
-    alternates: {
-      canonical: `/campaign/${campaign.slug}/donors`,
-    },
+    alternates: { canonical: url },
     openGraph: {
       title,
       description,
+      url,
       type: "article",
-      url: `/campaign/${campaign.slug}/donors`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
 
-/* =========================
-   HELPERS
-========================= */
+/* ================= HELPERS ================= */
 
 function formatCurrency(value?: number): string {
   return (value ?? 0).toLocaleString("id-ID");
@@ -54,22 +65,34 @@ function formatDate(date?: string): string {
   });
 }
 
-/* =========================
-   PAGE
-========================= */
+/* ================= PAGE ================= */
 
 export default async function CampaignDonorsPage({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams?: { ref?: string; src?: string };
 }) {
   const campaign = await getCampaignBySlug(params.slug);
   if (!campaign) return notFound();
 
   const donors = await getRecentDonors(String(campaign.id));
 
+  /* ================= AFFILIATE (FINAL CLEAN) ================= */
+
+  const { ref, src } = getAffiliateServer(searchParams);
+
+  const href = withAffiliate(
+    `/campaign/${campaign.slug}`,
+    ref,
+    src || "donors_page"
+  );
+
+  /* ================= UI ================= */
+
   return (
-    <main className="min-h-screen bg-[rgb(var(--color-surface))] flex justify-center">
+    <main className="min-h-screen bg-[rgb(var(--color-bg))] flex justify-center">
 
       <div className="w-full container-main pb-32 space-y-6">
 
@@ -135,7 +158,6 @@ export default async function CampaignDonorsPage({
                   key={d.id}
                   className="card flex items-start justify-between gap-4 animate-fadeUp"
                 >
-                  {/* LEFT */}
                   <div className="space-y-1">
 
                     <p className="body font-medium">
@@ -154,7 +176,6 @@ export default async function CampaignDonorsPage({
 
                   </div>
 
-                  {/* RIGHT */}
                   <div className="text-right space-y-1">
 
                     <p className="body font-semibold text-primary">
@@ -177,9 +198,19 @@ export default async function CampaignDonorsPage({
         <div className="fixed bottom-0 left-0 right-0 backdrop-blur bg-[rgb(var(--color-bg))]/90 border-t border-[rgb(var(--color-border))]">
 
           <div className="container-main p-3">
-            <Link href={`/campaign/${campaign.slug}`}>
-              <button className="btn-primary w-full">
-                Ikut Donasi Sekarang
+            <Link href={href}>
+              <button
+                className="btn-primary w-full relative overflow-hidden
+                shadow-[0_8px_24px_rgba(34,197,94,0.25)]
+                hover:shadow-[0_12px_32px_rgba(34,197,94,0.35)]
+                transition-all duration-300
+                active:scale-[0.98]"
+              >
+                <span className="relative z-10">
+                  Ikut Donasi Sekarang
+                </span>
+
+                <span className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition" />
               </button>
             </Link>
           </div>

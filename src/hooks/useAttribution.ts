@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { setAffiliate } from "@/lib/affiliate";
 
 export function useAttribution() {
   useEffect(() => {
@@ -10,15 +11,12 @@ export function useAttribution() {
       const params = new URLSearchParams(window.location.search);
 
       const ref = params.get("ref");
-      const src = params.get("src");
+      const src = params.get("src") || "direct";
 
-      if (ref && ref.trim()) {
-        localStorage.setItem("ref", ref);
-      }
+      if (!ref) return;
 
-      if (src && src.trim()) {
-        localStorage.setItem("src", src);
-      }
+      /* 🔥 FIRST TOUCH LOGIC */
+      setAffiliate(ref, src);
     } catch (err) {
       console.error("Attribution error:", err);
     }

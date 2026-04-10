@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
+import { getAffiliate } from "@/lib/affiliate";
 
 /* ================= TYPES ================= */
 
@@ -36,33 +37,12 @@ export default function PrayerForm({
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  /* ================= TRACKING ================= */
+  /* ================= AFFILIATE (FINAL) ================= */
 
-  const tracking = useMemo(() => {
-    if (typeof window === "undefined") {
-      return { ref: "", src: "direct" };
-    }
+  const affiliate = getAffiliate();
 
-    const params = new URLSearchParams(window.location.search);
-
-    const ref =
-      params.get("ref") ||
-      localStorage.getItem("ref") ||
-      "";
-
-    const src =
-      params.get("src") ||
-      localStorage.getItem("src") ||
-      "direct";
-
-    return { ref, src };
-  }, []);
-
-  /* simpan ke localStorage */
-  useEffect(() => {
-    if (tracking.ref) localStorage.setItem("ref", tracking.ref);
-    if (tracking.src) localStorage.setItem("src", tracking.src);
-  }, [tracking]);
+  const ref = affiliate?.code || "";
+  const src = affiliate?.source || "direct";
 
   /* ================= SUBMIT ================= */
 
@@ -85,8 +65,10 @@ export default function PrayerForm({
           name,
           message,
           target_name: target,
-          ref: tracking.ref,
-          src: tracking.src,
+
+          /* 🔥 FINAL TRACKING */
+          ref,
+          src,
         }),
       });
 
@@ -106,41 +88,52 @@ export default function PrayerForm({
     }
   }
 
+  /* ================= UI ================= */
+
   return (
-    <div className="card space-y-4 bg-[rgb(var(--color-soft))]">
+    <div className="card space-y-4 bg-[rgb(var(--color-soft))] animate-fadeUp">
+
+      {/* HEADER */}
       <div>
         <p className="h3">🤲 Tulis Doa</p>
-        <p className="caption">Doa kamu bisa diaminkan 💚</p>
+        <p className="caption">
+          Doa kamu bisa diaminkan banyak orang 💚
+        </p>
       </div>
 
+      {/* TEXTAREA */}
       <textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Ya Allah, semoga..."
-        className="w-full min-h-[90px] body p-3 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))]"
+        className="w-full min-h-[90px] body p-3 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--color-primary))]/20"
       />
 
+      {/* TARGET */}
       <input
         value={target}
         onChange={(e) => setTarget(e.target.value)}
-        placeholder="Untuk siapa?"
+        placeholder="Untuk siapa? (opsional)"
         className="w-full caption p-2 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))]"
       />
 
+      {/* NAME */}
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Nama"
+        placeholder="Nama (opsional)"
         className="w-full caption p-2 rounded-[var(--radius-md)] border border-[rgb(var(--color-border))]"
       />
 
+      {/* BUTTON */}
       <button
         onClick={handleSubmit}
         disabled={loading}
-        className="btn btn-primary w-full"
+        className="btn btn-primary w-full disabled:opacity-50"
       >
         {loading ? "Mengirim..." : "Kirim Doa 🤲"}
       </button>
+
     </div>
   );
 }

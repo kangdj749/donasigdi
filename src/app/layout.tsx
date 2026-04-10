@@ -1,7 +1,7 @@
 import "./globals.css";
 import Script from "next/script";
 import AttributionProvider from "@/components/system/AttributionProvider";
-
+import AffiliateProvider from "@/components/system/AffiliateContext";
 /* =========================
    METADATA (SEO READY)
 ========================= */
@@ -43,7 +43,9 @@ export default function RootLayout({
 
           {/* 🔥 GLOBAL ATTRIBUTION TRACKING */}
           <AttributionProvider>
+            <AffiliateProvider>
             {children}
+            </AffiliateProvider>
           </AttributionProvider>
 
         </div>

@@ -1,15 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AffiliateLink from "@/components/system/AffiliateLink";
 
 /* ================= TYPES ================= */
 
 type Props = {
   slug: string;
   prayersCount?: number;
-  donors?: React.ReactNode;
-  updates?: React.ReactNode;
 };
 
 /* ================= CONFIG ================= */
@@ -54,7 +52,6 @@ export default function CampaignTabs({
   ];
 
   const isActive = (href: string) => {
-    // exact match OR nested match
     return pathname === href || pathname.startsWith(href + "/");
   };
 
@@ -63,7 +60,6 @@ export default function CampaignTabs({
   return (
     <div className="w-full">
 
-      {/* ================= HEADER ================= */}
       <div className="sticky top-0 z-30 backdrop-blur bg-[rgb(var(--color-bg))]/90 border-b border-[rgb(var(--color-border))]">
 
         <div className="px-2 py-2">
@@ -73,10 +69,9 @@ export default function CampaignTabs({
               const active = isActive(tab.href);
 
               return (
-                <Link
+                <AffiliateLink
                   key={tab.key}
                   href={tab.href}
-                  prefetch={true}
                   className={`
                     relative min-w-[92px] px-3 py-2 rounded-full transition-all duration-200
                     flex items-center justify-center gap-1
@@ -119,7 +114,7 @@ export default function CampaignTabs({
                         {tab.badge}
                       </span>
                     )}
-                </Link>
+                </AffiliateLink>
               );
             })}
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PrayerForm from "./PrayerForm";
+import { getAffiliate } from "@/lib/affiliate";
 
 /* ================= TYPES ================= */
 
@@ -131,12 +132,10 @@ export default function PrayerList({
   function createShareUrl(id: string) {
     if (typeof window === "undefined") return "";
 
-    const ref =
-      localStorage.getItem("ref") || "";
+    const affiliate = getAffiliate();
 
-    const src =
-      localStorage.getItem("src") ||
-      `doa_${id}`;
+    const ref = affiliate?.code || "";
+    const src = affiliate?.source || "direct";
 
     return `${window.location.origin}/doa-orang-baik/${organizationSlug}/${campaignSlug}/${id}?ref=${ref}&src=${src}`;
   }
@@ -217,7 +216,7 @@ export default function PrayerList({
         </button>
       </div>
       )} 
-      
+
       {/* FILTER */}
       <div className="flex gap-2 overflow-x-auto">
         {[
