@@ -281,31 +281,26 @@ export async function incrementCampaignStats(
   const rows = res.data.values ?? [];
   if (rows.length < 2) return;
 
-  const headers = rows[0].map((h) =>
-    String(h).toLowerCase().trim()
-  );
-
-  const idIndex = headers.indexOf("id");
-  const amountIndex = headers.indexOf("collected_amount");
-  const donorIndex = headers.indexOf("donor_count");
-
   for (let i = 1; i < rows.length; i++) {
-    if (rows[i][idIndex] == campaignId) {
-      const currentAmount = Number(rows[i][amountIndex] || 0);
-      const currentDonor = Number(rows[i][donorIndex] || 0);
+    if (String(rows[i][0]) === String(campaignId)) {
+      // 🔥 FIX: gunakan index langsung (lebih aman)
+      const currentAmount = Number(rows[i][9] || 0);  // collected_amount
+      const currentDonor = Number(rows[i][10] || 0); // donor_count
 
       const updatedAmount = currentAmount + amount;
       const updatedDonor = currentDonor + 1;
 
-      const rowNumber = i + 2; // 🔥 FIX DISINI
+      const rowNumber = i + 1; // 🔥 FIX (bukan +2)
+
+      console.log("📊 UPDATE ROW:", {
+        rowNumber,
+        updatedAmount,
+        updatedDonor,
+      });
 
       await sheets.spreadsheets.values.update({
         spreadsheetId: SHEET_ID,
-        range: `campaigns!${String.fromCharCode(
-          65 + amountIndex
-        )}${rowNumber}:${String.fromCharCode(
-          65 + donorIndex
-        )}${rowNumber}`,
+        range: `campaigns!J${rowNumber}:K${rowNumber}`, // 🔥 kolom FIX
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [[updatedAmount, updatedDonor]],
